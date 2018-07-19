@@ -103,19 +103,19 @@ exports.createNotifierCallback = () => {
     })
   }
 }
-function getApps() {
+function getAppNames() {
   let apps;
-  if(!getApps._cache) {
+  if(!getAppNames._cache) {
     apps = fs.readdirSync(paths.APPS) || [];
-    getApps._cache = apps;
+    getAppNames._cache = apps;
   } else {
-    apps = getApps._cache;
+    apps = getAppNames._cache;
   }
   return apps;
 }
 
 exports.getEntries = () => {
-  const apps = getApps();
+  const apps = getAppNames();
   const entries = {};
   apps.forEach(appName => {
     // const stats = fs.statSync(path.resolve(paths.APPS, appName));
@@ -129,7 +129,7 @@ exports.getEntries = () => {
 }
 
 exports.getHtmlWebpackPluginInstances = () => {
-  return getApps().map(appName => {
+  return getAppNames().map(appName => {
     return new HtmlWebpackPlugin({
       filename: `${appName}.html`,
       template: path.resolve(paths.APPS, `${appName}/index.html`),
@@ -145,5 +145,14 @@ exports.getHtmlWebpackPluginInstances = () => {
       // necessary to consistently work with multiple chunks via CommonsChunkPlugin
       chunksSortMode: 'dependency'
     })
+  })
+}
+
+exports.generateHistoryFallbackRules = () => {
+  return getAppNames().map(appName => {
+    return {
+      from: new RegExp(`^\/${appName}`),
+      to: path.posix.join(config.dev.assetsPublicPath, `${appName}.html`)
+    }
   })
 }

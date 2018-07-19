@@ -1,7 +1,6 @@
 <template>
   <div id="app">
-    client page
-    <!-- <router-view/> -->
+    <router-view/>
   </div>
 </template>
 
