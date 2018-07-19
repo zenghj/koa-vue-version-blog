@@ -133,10 +133,11 @@ exports.getHtmlWebpackPluginInstances = () => {
     return new HtmlWebpackPlugin({
       filename: `${appName}.html`,
       template: path.resolve(paths.APPS, `${appName}/index.html`),
+      chunks: ['manifest', 'vendor', appName],
       inject: true,
       minify: {
         removeComments: true,
-        collapseWhitespace: true,
+        // collapseWhitespace: true,
         removeAttributeQuotes: true
         // more options:
         // https://github.com/kangax/html-minifier#options-quick-reference
