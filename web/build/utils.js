@@ -131,7 +131,9 @@ exports.getEntries = () => {
 exports.getHtmlWebpackPluginInstances = () => {
   return getAppNames().map(appName => {
     return new HtmlWebpackPlugin({
-      filename: path.resolve(__dirname, `../dist/${appName}.html`),
+      filename: process.env.NODE_ENV === 'production' 
+        ? path.resolve(__dirname, `../dist/${appName}.html`)
+        : `${appName}.html`,
       template: path.resolve(paths.APPS, `${appName}/index.html`),
       chunks: ['manifest', 'vendor', appName],
       inject: true,
@@ -150,7 +152,6 @@ exports.getHtmlWebpackPluginInstances = () => {
 
 exports.generateHistoryFallbackRules = () => {
   return getAppNames().map(appName => {
-    console.log(path.posix.join(config.dev.assetsPublicPath, `${appName}.html`))
     return {
       from: new RegExp(`^/${appName}`),
       to: path.posix.join(config.dev.assetsPublicPath, `${appName}.html`)
