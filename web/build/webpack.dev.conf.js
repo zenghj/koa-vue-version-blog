@@ -28,6 +28,7 @@ const devWebpackConfig = merge(baseWebpackConfig, {
     },
     hot: true,
     contentBase: false, // since we use CopyWebpackPlugin.
+    // contentBase: path.resolve(__dirname, '../dist'),
     compress: true,
     host: HOST || config.dev.host,
     port: PORT || config.dev.port,
@@ -76,7 +77,7 @@ module.exports = new Promise((resolve, reject) => {
       // Add FriendlyErrorsPlugin
       devWebpackConfig.plugins.push(new FriendlyErrorsPlugin({
         compilationSuccessInfo: {
-          messages: [`Your application is running here: http://${devWebpackConfig.devServer.host}:${port}`],
+          messages: [`Your application is running here: http://${devWebpackConfig.devServer.host}:${port}/admin`],
         },
         onErrors: config.dev.notifyOnErrors
         ? utils.createNotifierCallback()
