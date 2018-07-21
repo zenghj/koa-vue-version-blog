@@ -15,9 +15,10 @@ export default new Router({
       alias: '/articles'
     },
     {
-      path: '/article/:_id',
+      path: '/article/:id',
       name: 'article',
-      component: Article
+      component: Article,
+      props: true,
     }
   ]
 })

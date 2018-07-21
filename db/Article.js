@@ -21,6 +21,9 @@ const articleSchema = new Schema({
   },
   content: {
     type: String,
+  },
+  rawContent: {
+    type: String,
   }
 })
 
@@ -38,13 +41,14 @@ const Article = mongoose.model('Article', articleSchema)
 
 
 const methods = {};
-methods.$create = ({status = 1, title, content}) => {
+methods.$create = ({status = 1, title, content, rawContent}) => {
   const article = new Article({
     status,
     title,
     content,
+    rawContent,
   });
-  return content.save();
+  return article.save();
 }
 
 methods.$read = ({id}) => {
@@ -74,12 +78,13 @@ methods.$readList = ({page, limit}) => {
   });
 }
 
-methods.$update = ({id, status, title, content}) => {
+methods.$update = ({id, status, title, content, rawContent}) => {
   return new Promise((resolve, reject) => {
     Article.findByIdAndUpdate(id, {
       status, 
       title, 
       content,
+      rawContent,
     }, (err, doc) => {
       if(err) {
         return reject(err);
@@ -89,11 +94,9 @@ methods.$update = ({id, status, title, content}) => {
   });
 }
 
-methods.$delete = ({id}) => {
+methods.$delete = (id) => {
   return new Promise((resolve, reject) => {
-    Article.findByIdAndUpdate(id, {
-      status: -1,
-    }, (err, doc) => {
+    Article.findByIdAndRemove(id, (err, doc) => {
       if(err) {
         return reject(err);
       }

@@ -9,7 +9,9 @@
         <h2 class="title">{{item.title}}</h2>
         <div class="action-btns">
           <a :href="`${URLS.client}#/article/${item._id}`"><el-button class="fr" type="primary" icon="el-icon-document" circle></el-button></a>
-          <el-button class="el-icon-edit-btn" icon="el-icon-edit" type="primary" circle @click.stop.prevent="openEditDialog($event, item)"></el-button>
+          <router-link :to="`/editArticle?id=${item._id}`">
+            <el-button class="el-icon-edit-btn" icon="el-icon-edit" type="primary" circle></el-button>
+          </router-link>
           <el-button class="delete-item-btn" icon="el-icon-delete" type="danger" circle @click.stop.prevent="confirmDelete($event, item)"></el-button>
         </div>
       </div>
@@ -20,29 +22,43 @@
   </div>
 </template>
 <script>
+import {fetchArticles, deleteArticle} from '../config/api.js'
 export default {
+  created () {
+    this.fetchList()
+  },
   data () {
     return {
-      list: [
-        {
-          title: 'Article1',
-          createAt: '2018-09-09',
-          updateAt: null,
-          _id: '1'
-        },
-        {
-          title: 'Article2',
-          createAt: '2018-09-10',
-          updateAt: null,
-          _id: '2'
-        }
-      ]
+      list: []
     }
   },
   methods: {
-    openAddDialog () {},
-    openEditDialog () {},
-    confirmDelete () {},
+    confirmDelete (e, item) {
+      this.$confirm('此操作将永久删除', '警告', {
+        confirmButtonText: '确定',
+        cancelButtonText: '取消',
+        type: 'warning'
+      }).then(() => {
+        deleteArticle(item._id)
+          .then(({data}) => {
+            if (data.state === 1) {
+              this.fetchList()
+              this.$message.success('删除成功')
+            } else {
+              this.$message.error('删除失败')
+            }
+          })
+      }).catch(() => {})
+    },
+    fetchList () {
+      fetchArticles().then(({data}) => {
+        if (data.state === 1) {
+          this.list = data.result.docs
+        } else {
+          this.$message.error(data.msg || '获取列表失败')
+        }
+      })
+    }
   }
 }
 </script>

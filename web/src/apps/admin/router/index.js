@@ -18,7 +18,10 @@ export default new Router({
     {
       path: '/editArticle',
       name: 'editArticle',
-      component: EditArticle
+      component: EditArticle,
+      props: (route) => ({
+        query: route.query
+      })
     },
     {
       path: '/draftArticles',

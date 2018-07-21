@@ -7,6 +7,7 @@ import ElementUI from 'element-ui'
 import 'element-ui/lib/theme-chalk/index.css'
 import '../../assets/less/common.less'
 import URLS from '../../assets/js/urls'
+import '../../assets/js/axiosConfig'
 
 Vue.config.productionTip = false
 
@@ -19,6 +20,7 @@ Vue.mixin({
     }
   }
 })
+
 /* eslint-disable no-new */
 new Vue({
   el: '#app',

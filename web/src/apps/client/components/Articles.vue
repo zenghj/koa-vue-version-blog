@@ -2,14 +2,11 @@
   <div class="articles">
     <el-row class="clearfix title">
       <h1 class="fl">Article List</h1>
+      <router-link :to="{name: 'editArticle'}"><el-button class="fr" type="primary" icon="el-icon-plus" circle></el-button></router-link>
     </el-row>
     <el-card v-for="(item,index) in list" :key="index" class="article-item">
       <div slot="header">
-        <h2 class="title">
-          <router-link :to="`/article/${item._id}`">
-            <el-button type="text">{{item.title}}</el-button>
-          </router-link>
-        </h2>
+        <h2 class="title"><router-link :to="`/article/${item._id}`">{{item.title}}</router-link></h2>
       </div>
       <div class="des">
         <p>createAt: {{item.createAt}}</p>
@@ -18,29 +15,26 @@
   </div>
 </template>
 <script>
+import {fetchArticles} from '../config/api.js'
 export default {
+  created () {
+    this.fetchList()
+  },
   data () {
     return {
-      list: [
-        {
-          title: 'Article1',
-          createAt: '2018-09-09',
-          updateAt: null,
-          _id: '1'
-        },
-        {
-          title: 'Article2',
-          createAt: '2018-09-10',
-          updateAt: null,
-          _id: '2'
-        }
-      ]
+      list: []
     }
   },
   methods: {
-    openAddDialog () {},
-    openEditDialog () {},
-    confirmDelete () {},
+    fetchList () {
+      fetchArticles().then(({data}) => {
+        if (data.state === 1) {
+          this.list = data.result.docs
+        } else {
+          this.$message.error(data.msg || '获取列表失败')
+        }
+      })
+    }
   }
 }
 </script>

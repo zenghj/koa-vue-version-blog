@@ -1,16 +1,18 @@
 <template>
   <section class="edit-article">
     <header class="">
-      <el-input class="input" v-model="form.title"  placeholder="请输入标题"></el-input>
+      <el-input class="input" v-model="form.title" placeholder="请输入标题"></el-input>
       <div class="actions">
-        <router-link :to="{name: 'draftArticles'}"><el-button type="text">草稿箱</el-button></router-link>
-        <el-button type="text">保存到草稿箱</el-button>
-        <el-button type="text">发布</el-button>
+        <router-link :to="{name: 'draftArticles'}" target="_blank">
+          <el-button type="text">草稿箱</el-button>
+        </router-link>
+        <el-button type="text" @click="saveDraft">保存到草稿箱</el-button>
+        <el-button type="text" @click="publish">发布</el-button>
       </div>
     </header>
     <main id="editor" class="clearfix">
-      <textarea class="fl" :value="form.textarea" @input="update" name="" id="" placeholder="请输入文章内容"></textarea>
-      <div class="preview fr" v-html="compiledMarkdown"></div>
+      <textarea class="fl" :value="form.rawContent" @input="update" name="" id="" placeholder="请输入文章内容"></textarea>
+      <div class="preview fr" v-html="content"></div>
     </main>
   </section>
 </template>
@@ -18,30 +20,93 @@
 <script>
 import marked from 'marked'
 import _ from 'lodash'
+import {saveAsDraft, publishArticle, getArticleInfo} from '../config/api.js'
 export default {
+  beforeRouteEnter (to, from, next) {
+    const id = to.query.id
+    if (id) {
+      getArticleInfo(id)
+        .then(({data}) => {
+          const {result, state} = data
+          console.log(result)
+          if (state === 1) {
+            next(vm => {
+              vm.form.title = result.title || ''
+              vm.form.rawContent = result.rawContent || ''
+            })
+          } else {
+            next(vm => {
+              vm.$message.error('初始化失败')
+            })
+          }
+        })
+        .catch(err => {
+          console.error(err)
+          next(vm => {
+            vm.$message.error('初始化失败')
+          })
+        })
+    } else {
+      next()
+    }
+  },
   data () {
     return {
       form: {
         title: '',
-        textarea: '',
+        rawContent: '',
       },
     }
   },
   computed: {
-    compiledMarkdown () {
-      return marked(this.form.textarea, {sanitize: true})
+    content () {
+      return marked(this.form.rawContent, {sanitize: true})
     },
   },
   methods: {
     update: _.debounce(function (e) {
-      this.form.textarea = e.target.value
-    })
+      this.form.rawContent = e.target.value
+    }),
+    saveDraft (e) {
+      saveAsDraft({
+        title: this.form.title,
+        content: this.content,
+        status: 0,
+        rawContent: this.form.rawContent,
+      }).then(({data}) => {
+        if (data.state === 1) {
+          this.$message.success('保存成功')
+        } else {
+          this.$message.error('保存失败')
+        }
+      }).catch(err => {
+        console.error(err)
+        this.$message.error('保存失败')
+      })
+    },
+    publish (e) {
+      publishArticle({
+        title: this.form.title,
+        content: this.content,
+        status: 1,
+        rawContent: this.form.rawContent,
+      }).then(({data}) => {
+        if (data.state === 1) {
+          this.$message.success('保存成功')
+        } else {
+          this.$message.error('保存失败')
+        }
+      }).catch(err => {
+        console.error(err)
+        this.$message.error('保存失败')
+      })
+    }
   }
 }
 </script>
 
 <style lang="less">
-@import "./less/editor.less";
+@import './less/editor.less';
 @headerHeight: 3em;
 .edit-article {
   height: 100vh;
@@ -68,7 +133,7 @@ export default {
     }
   }
   #editor {
-    height: calc(~"100% - 3em");
+    height: calc(~'100% - 3em');
   }
 }
 </style>
