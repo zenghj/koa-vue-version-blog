@@ -30,7 +30,7 @@ app.use(router.routes())
 app.use(async (ctx, next) => {
   const {request, response} = ctx;
   errorLog('%s %s %s', response.status, request.method, request.originalUrl)
-  await next();  
+  ctx.status = 404;  
 })
 
 app.listen(port, (err) => {
