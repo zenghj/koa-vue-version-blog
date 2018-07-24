@@ -25,7 +25,7 @@
       label="操作"
       width="110">
       <template slot-scope="scope">
-        <a :href="`${URLS.client}#/article/${scope.row._id}`"><el-button type="text" size="small">查看</el-button></a>
+        <a :href="`${URLS.client}#/articles/${scope.row._id}`"><el-button type="text" size="small">查看</el-button></a>
         <router-link :to="`/editArticle?id=${scope.row._id}`">
             <el-button type="text" size="small">编辑</el-button>
         </router-link>

@@ -81,53 +81,59 @@ export default {
         this.saveDraft()
       })
     }, 500),
-    saveDraft (e) {
+    saveDraft (event) {
       const payload = {
         title: this.form.title,
         content: this.content,
         status: 0,
         rawContent: this.form.rawContent,
       }
+      let errMsg = event ? '保存失败' : '自动保存失败'
+      let sucMsg = '保存成功'
+
       if(!this.id) {
         saveAsDraft(payload).then(({data}) => {
           if (data.state === 1) {
             this.id = data.result._id
             this.$router.push(`/editArticle?id=${this.id}`)
+            event && this.$message.success(sucMsg)
           } else {
-            this.$message.error('自动保存失败')
+            this.$message.error(errMsg)
           }
         }).catch(err => {
           console.error(err)
-          this.$message.error('自动保存失败')
+          this.$message.error(errMsg)
         })
       } else {
         updateArticle(this.id, payload).then(({data}) => {
-          if (data.state !== 1) {
-            this.$message.error('自动保存失败')
+          if (data.state === 1) {
+            event && this.$message.success(sucMsg)
+          } else {
+            this.$message.error(errMsg)
           }
         }).catch(err => {
           console.error(err)
-          this.$message.error('自动保存失败')
+          this.$message.error(errMsg)
         })
       }
 
     },
     publish (e) {
-      publishArticle({
+      publishArticle(this.id, {
         title: this.form.title,
         content: this.content,
         status: 1,
         rawContent: this.form.rawContent,
       }).then(({data}) => {
         if (data.state === 1) {
-          this.$message.success('保存成功')
+          this.$message.success('发布成功')
           this.$router.push({name: 'articles'})
         } else {
-          this.$message.error('保存失败')
+          this.$message.error('发布失败')
         }
       }).catch(err => {
         console.error(err)
-        this.$message.error('保存失败')
+        this.$message.error('发布失败')
       })
     }
   }

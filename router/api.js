@@ -39,7 +39,7 @@ router.get('/article/:id', async (ctx, next) => {
   await Article.$read(ctx.params)
     .then(doc => {
       ctx.body = {
-        state: 1,
+        state: doc ? 1 : -1,
         result: doc,
       }
     })
@@ -50,7 +50,7 @@ router.get('/articles', checkAuth, async (ctx, next) => {
   await Article.$readList(ctx.query)
     .then(result => {
       ctx.body = {
-        state: 1,
+        state: result ? 1 : -1,
         result,
       }
     })
@@ -66,6 +66,11 @@ router.put('/acticle/:id', checkAuth, async (ctx, next) => {
     ctx.body = {
       state: 1,
       result,
+    }
+  }).catch(err => {
+    ctx.body = {
+      state: -1,
+      msg: err.msg,
     }
   })
 })

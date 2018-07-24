@@ -4,17 +4,18 @@ const axios = require('axios')
 const Router = require('koa-router')
 const apiRouter = require('./api')
 const checkAuth = require('../middlewares/checkAuth')
+const {paths} = require('../config')
 
 
 router = new Router()
-router.get('/admin', checkAuth, async ctx => {
+router.get(paths.admin, checkAuth, async ctx => {
   ctx.type = 'html';
-  ctx.body = fs.createReadStream(path.resolve(__dirname, '../web/dist/admin.html'));
+  ctx.body = fs.createReadStream(paths.adminHtml);
 })
-router.get('/client', checkAuth, async ctx => {
+router.get(paths.client, async ctx => {
   ctx.type = 'html';
-  ctx.body = fs.createReadStream(path.resolve(__dirname, '../web/dist/client.html'));
+  ctx.body = fs.createReadStream(paths.clientHtml);
 })
-router.use('/api', apiRouter.routes())
+router.use(paths.apiPrefix, apiRouter.routes())
 
 module.exports = router

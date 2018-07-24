@@ -4,8 +4,12 @@ export function saveAsDraft (payload) {
   return axios.post('/article', payload)
 }
 
-export function publishArticle (payload) {
-  return axios.post('/article', payload)
+export function publishArticle (id, payload) {
+  if (id) {
+    return updateArticle(id, payload)
+  } else {
+    return axios.post('/article', payload)
+  }
 }
 export function fetchDrafts () {
   return axios.get('/articles', {

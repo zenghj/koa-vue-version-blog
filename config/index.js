@@ -3,6 +3,11 @@ const path = require('path')
 exports.paths = {
   staticFilesPath: path.resolve(__dirname, '../web/dist/static'),
   logDir: path.resolve(__dirname, '../log'),
+  admin: '/blog/admin',
+  adminHtml: path.resolve(__dirname, '../web/dist/admin.html'),
+  client: '/blog/client',
+  clientHtml: path.resolve(__dirname, '../web/dist/client.html'),
+  apiPrefix: '/blog/api'
 }
 
 exports.DBHost = 'mongodb://localhost:27017/my-blog'

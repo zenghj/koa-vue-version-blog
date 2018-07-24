@@ -103,35 +103,35 @@ exports.createNotifierCallback = () => {
     })
   }
 }
-function getAppNames() {
-  let apps;
-  if(!getAppNames._cache) {
-    apps = fs.readdirSync(paths.APPS) || [];
-    getAppNames._cache = apps;
+function getAppNames () {
+  let apps
+  if (!getAppNames._cache) {
+    apps = fs.readdirSync(paths.APPS) || []
+    getAppNames._cache = apps
   } else {
-    apps = getAppNames._cache;
+    apps = getAppNames._cache
   }
-  return apps;
+  return apps
 }
 
 exports.getEntries = () => {
-  const apps = getAppNames();
-  const entries = {};
+  const apps = getAppNames()
+  const entries = {}
   apps.forEach(appName => {
     // const stats = fs.statSync(path.resolve(paths.APPS, appName));
     // const appEntryFile
     // if(stats.isDirectory())
-    const appEntryFilePath = path.resolve(paths.APPS, `${appName}/main.js`);
-    entries[appName] = appEntryFilePath;
+    const appEntryFilePath = path.resolve(paths.APPS, `${appName}/main.js`)
+    entries[appName] = appEntryFilePath
   })
-  console.log('entries', entries);
-  return entries;
+  console.log('entries', entries)
+  return entries
 }
 
 exports.getHtmlWebpackPluginInstances = () => {
   return getAppNames().map(appName => {
     return new HtmlWebpackPlugin({
-      filename: process.env.NODE_ENV === 'production' 
+      filename: process.env.NODE_ENV === 'production'
         ? path.resolve(__dirname, `../dist/${appName}.html`)
         : `${appName}.html`,
       template: path.resolve(paths.APPS, `${appName}/index.html`),
@@ -153,7 +153,7 @@ exports.getHtmlWebpackPluginInstances = () => {
 exports.generateHistoryFallbackRules = () => {
   return getAppNames().map(appName => {
     return {
-      from: new RegExp(`^/${appName}`),
+      from: new RegExp(`^/blog/${appName}`),
       to: path.posix.join(config.dev.assetsPublicPath, `${appName}.html`)
     }
   })

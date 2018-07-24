@@ -7,7 +7,7 @@ const DraftArticles = () => import('../components/DraftArticles.vue')
 Vue.use(Router)
 
 export default new Router({
-  base: '/admin',
+  base: '/blog/admin',
   routes: [
     {
       path: '/',

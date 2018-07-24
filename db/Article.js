@@ -84,9 +84,14 @@ methods.$update = ({id, ...rest}) => {
       ...rest
     }, (err, doc) => {
       if(err) {
-        return reject(err);
+        return reject(err)
       }
-      resolve(doc)
+      if(doc) {
+        resolve(doc)
+      } else {
+        reject({code: -1, msg: '不存在此记录'})
+      }
+      
     })
   });
 }

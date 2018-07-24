@@ -2,11 +2,10 @@
   <div class="articles">
     <el-row class="clearfix title">
       <h1 class="fl">Article List</h1>
-      <router-link :to="{name: 'editArticle'}"><el-button class="fr" type="primary" icon="el-icon-plus" circle></el-button></router-link>
     </el-row>
     <el-card v-for="(item,index) in list" :key="index" class="article-item">
       <div slot="header">
-        <h2 class="title"><router-link :to="`/article/${item._id}`">{{item.title}}</router-link></h2>
+        <h2 class="title"><router-link :to="{name: 'article', params: {id: item._id}}">{{item.title}}</router-link></h2>
       </div>
       <div class="des">
         <p>createAt: {{item.createAt}}</p>
