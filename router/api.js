@@ -1,6 +1,7 @@
 const Router = require('koa-router');
 const {Article} = require('../db');
 const {resErrorLog} = require('../lib/logger')
+const checkAuth = require('../middlewares/checkAuth')
 
 router = new Router();
 
@@ -19,7 +20,7 @@ router.get('/test', async (ctx, next, x) => {
 })
 
 // 创建文章： 发布 & 存草稿
-router.post('/article', async (ctx, next, xx) => {
+router.post('/article', checkAuth, async (ctx, next, xx) => {
   await Article.$create({
     ...ctx.request.body
   })
@@ -45,7 +46,7 @@ router.get('/article/:id', async (ctx, next) => {
     .catch(createCatchErrFn(ctx, '获取失败'))
 })
 
-router.get('/articles', async (ctx, next) => {
+router.get('/articles', checkAuth, async (ctx, next) => {
   await Article.$readList(ctx.query)
     .then(result => {
       ctx.body = {
@@ -56,9 +57,9 @@ router.get('/articles', async (ctx, next) => {
     .catch(createCatchErrFn(ctx))
 })
 
-router.put('/acticle/:id', async (ctx, next) => {
+router.put('/acticle/:id', checkAuth, async (ctx, next) => {
   await Article.$update({
-    id,
+    id: ctx.params.id,
     ...ctx.request.body
   })
   .then(result => {
@@ -75,7 +76,7 @@ router.put('/acticle/:id', async (ctx, next) => {
 
 // })
 
-router.delete('/article/:id', async (ctx, next) => {
+router.delete('/article/:id', checkAuth, async (ctx, next) => {
   await Article.$delete(ctx.params.id)
     .then((result) => {
       ctx.body = {

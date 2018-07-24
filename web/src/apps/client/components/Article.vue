@@ -1,10 +1,13 @@
 <template>
-  <section class="article" v-html="content">
+  <section class="article markdown-body" >
+    <h1>{{article.title}}</h1>
+    <div v-html="article.content" class=""></div>
   </section>
 </template>
 
 <script>
 import {getArticleInfo} from '../config/api.js'
+import '../../../assets/less/markdown.less'
 export default {
   props: ['id'],
   created() {
@@ -12,7 +15,7 @@ export default {
       .then(({data}) => {
           const {result, state} = data
           if (state === 1) {
-            this.content = result.content
+            this.article = result
           } else {
             this.$message.error('初始化失败')
           }
@@ -24,8 +27,13 @@ export default {
   },
   data () {
     return {
-      content: ''
+      article: {}
     }
   }
 }
 </script>
+
+<style>
+
+</style>
+

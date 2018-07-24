@@ -34,3 +34,9 @@ export function getArticleInfo (id) {
 export function deleteArticle (id) {
   return axios.delete(`/article/${id}`)
 }
+
+export function updateArticle (id, payload) {
+  return axios.put(`/acticle/${id}`, {
+    ...payload
+  })
+}

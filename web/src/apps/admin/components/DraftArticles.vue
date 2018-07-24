@@ -1,26 +1,42 @@
 <template>
   <div class="articles">
+    <my-header></my-header>
     <el-row class="clearfix title">
-      <h1 class="fl">Draft Article List</h1>
+      <h1 class="fl">草稿箱</h1>
     </el-row>
-    <el-card v-for="(item, index) in list" :key="index" class="article-item">
-      <div slot="header">
-        <h2 class="title">{{item.title}}</h2>
-        <div class="action-btns">
-          <router-link :to="`/editArticle?id=${item._id}`">
-            <el-button class="el-icon-edit-btn" icon="el-icon-edit" type="primary" circle></el-button>
-          </router-link>
-          <el-button class="delete-item-btn" icon="el-icon-delete" type="danger" circle @click.stop.prevent="confirmDelete($event, item)"></el-button>
-        </div>
-      </div>
-      <div class="des">
-        <p>createAt: {{item.createAt}}</p>
-      </div>
-    </el-card>
+    <el-table
+    :data="computedList"
+    stripe
+    style="width: 100%">
+    <el-table-column
+      prop="title"
+      label="标题"
+      >
+    </el-table-column>
+    <el-table-column
+      prop="createAt"
+      label="创建日期"
+      >
+    </el-table-column>
+     <el-table-column
+      fixed="right"
+      label="操作"
+      width="110">
+      <template slot-scope="scope">
+        <el-button type="text" size="small" @click="publish($event, scope.row)">发布</el-button>
+        <router-link :to="`/editArticle?id=${scope.row._id}`">
+            <el-button type="text" size="small">编辑</el-button>
+        </router-link>
+        <el-button type="text" size="small" @click.stop.prevent="confirmDelete($event, scope.row)">删除</el-button>
+      </template>
+    </el-table-column>
+  </el-table>
   </div>
 </template>
 <script>
-import {fetchDrafts, deleteArticle} from '../config/api.js'
+import {fetchDrafts, deleteArticle, updateArticle} from '../config/api.js'
+import MyHeader from './MyHeader.vue'
+import formatTime from '../../../assets/js/timeHelper.js'
 export default {
   created () {
     this.fetchList()
@@ -29,6 +45,20 @@ export default {
     return {
       list: []
     }
+  },
+  computed: {
+    computedList () {
+      return this.list.map(item => {
+        return {
+          ...item,
+          title: (item.title ? item.title : '无标题'),
+          createAt: formatTime(item.createAt),
+        }
+      })
+    }
+  },
+  components: {
+    MyHeader,
   },
   methods: {
     confirmDelete (e, item) {
@@ -56,14 +86,31 @@ export default {
           this.$message.error(data.msg || '获取列表失败')
         }
       })
-    }
+    },
+    publish (e, item) {
+      console.log(item);
+      updateArticle(item._id, {
+        status: 1,
+      }).then(({data}) => {
+        if (data.state === 1) {
+          this.$message.success('保存成功')
+          // this.$router.push({name: 'articles'})
+          this.fetchList()
+        } else {
+          this.$message.error('保存失败')
+        }
+      }).catch(err => {
+        console.error(err)
+        this.$message.error('保存失败')
+      })
+    } 
   }
 }
 </script>
 
 <style lang="less">
 .articles {
-  margin: 1em;
+  margin: 0 1em;
 }
 .article-item {
   position: relative;

@@ -1,28 +1,44 @@
 <template>
   <div class="articles">
+    <my-header></my-header>
     <el-row class="clearfix title">
-      <h1 class="fl">Article List</h1>
-      <router-link :to="{name: 'editArticle'}"><el-button class="fr" type="primary" icon="el-icon-plus" circle></el-button></router-link>
+      <h1 class="fl">文章管理后台</h1>
+      <router-link :to="{name: 'editArticle'}" class="fr"><el-button type="text">发布新文章</el-button></router-link>
     </el-row>
-    <el-card v-for="(item,index) in list" :key="index" class="article-item">
-      <div slot="header">
-        <h2 class="title">{{item.title}}</h2>
-        <div class="action-btns">
-          <a :href="`${URLS.client}#/article/${item._id}`"><el-button class="fr" type="primary" icon="el-icon-document" circle></el-button></a>
-          <router-link :to="`/editArticle?id=${item._id}`">
-            <el-button class="el-icon-edit-btn" icon="el-icon-edit" type="primary" circle></el-button>
-          </router-link>
-          <el-button class="delete-item-btn" icon="el-icon-delete" type="danger" circle @click.stop.prevent="confirmDelete($event, item)"></el-button>
-        </div>
-      </div>
-      <div class="des">
-        <p>createAt: {{item.createAt}}</p>
-      </div>
-    </el-card>
+    
+    <el-table
+    :data="computedList"
+    stripe
+    style="width: 100%">
+    <el-table-column
+      prop="title"
+      label="标题"
+      >
+    </el-table-column>
+    <el-table-column
+      prop="createAt"
+      label="创建日期"
+      >
+    </el-table-column>
+     <el-table-column
+      fixed="right"
+      label="操作"
+      width="110">
+      <template slot-scope="scope">
+        <a :href="`${URLS.client}#/article/${scope.row._id}`"><el-button type="text" size="small">查看</el-button></a>
+        <router-link :to="`/editArticle?id=${scope.row._id}`">
+            <el-button type="text" size="small">编辑</el-button>
+        </router-link>
+        <el-button type="text" size="small" @click.stop.prevent="confirmDelete($event, scope.row)">删除</el-button>
+      </template>
+    </el-table-column>
+  </el-table>
   </div>
 </template>
 <script>
 import {fetchArticles, deleteArticle} from '../config/api.js'
+import MyHeader from './MyHeader.vue'
+import formatTime from '../../../assets/js/timeHelper.js'
 export default {
   created () {
     this.fetchList()
@@ -31,6 +47,20 @@ export default {
     return {
       list: []
     }
+  },
+  computed: {
+    computedList () {
+      return this.list.map(item => {
+        return {
+          ...item,
+          title: (item.title ? item.title : '无标题'),
+          createAt: formatTime(item.createAt),
+        }
+      })
+    }
+  },
+  components: {
+    MyHeader,
   },
   methods: {
     confirmDelete (e, item) {
@@ -65,7 +95,7 @@ export default {
 
 <style lang="less">
 .articles {
-  margin: 1em;
+  margin: 0 1em;
 }
 .article-item {
   position: relative;

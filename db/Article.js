@@ -16,8 +16,8 @@ const articleSchema = new Schema({
   },
   title: {
     type: String,
-    unique: true,
-    index: true,
+    // unique: true,
+    // index: true,
   },
   content: {
     type: String,
@@ -27,13 +27,13 @@ const articleSchema = new Schema({
   }
 })
 
-articleSchema.pre('save', function(next) {
-  if(this.title) {
-    next()
-  } else {
-    next(new Error('title 不能为空'))
-  } 
-})
+// articleSchema.pre('save', function(next) {
+//   if(this.title) {
+//     next()
+//   } else {
+//     next(new Error('title 不能为空'))
+//   } 
+// })
 
 articleSchema.plugin(mongoosePaginate);
 
@@ -62,10 +62,10 @@ methods.$read = ({id}) => {
   });
 }
 
-methods.$readList = ({page, limit}) => {
+methods.$readList = ({page, limit, status}) => {
   return new Promise((resolve, reject) => {
     Article.paginate({
-
+      status: (status ? status : 0)
     }, {
       page, 
       limit,
@@ -78,13 +78,10 @@ methods.$readList = ({page, limit}) => {
   });
 }
 
-methods.$update = ({id, status, title, content, rawContent}) => {
+methods.$update = ({id, ...rest}) => {
   return new Promise((resolve, reject) => {
     Article.findByIdAndUpdate(id, {
-      status, 
-      title, 
-      content,
-      rawContent,
+      ...rest
     }, (err, doc) => {
       if(err) {
         return reject(err);
