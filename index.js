@@ -10,11 +10,6 @@ const {errorLog, httpLog} = require('./lib/logger')
 require('./connectDB')
 const port = 3000
 
-app.use(koaStatic(config.paths.staticFilesPath, {
-  gzip: true,
-  maxage: 31536000000,
-}))
-
 app.use(bodyParser())
 
 app.use(logger())
@@ -24,6 +19,11 @@ app.use(async (ctx, next) => {
   httpLog('%s %s', request.method, request.originalUrl)
   await next();  
 })
+
+app.use(koaStatic(config.paths.staticFilesPath, {
+  gzip: true,
+  maxage: 31536000000,
+}))
 
 app.use(router.routes())
 
