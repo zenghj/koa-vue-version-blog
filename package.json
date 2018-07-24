@@ -4,7 +4,9 @@
   "description": "",
   "main": "index.js",
   "scripts": {
-    "start": "node index.js",
+    "start": "pm2 start index.js --name blog",
+    "restart": "pm2 restart blog",
+    "stop": "pm2 stop blog",
     "dev": "node index.js"
   },
   "keywords": [],
