@@ -3,7 +3,6 @@ const Koa = require('koa')
 const koaStatic = require('koa-static')
 const logger = require('koa-logger')
 const bodyParser = require('koa-bodyparser')
-const koaBody = require('koa-body');
 const app = new Koa()
 const router = require('./router')
 const config = require('./config')
@@ -12,7 +11,6 @@ require('./connectDB')
 const port = 3000
 
 app.use(bodyParser())
-app.use(koaBody({multipart: true}))
 
 app.use(logger())
 

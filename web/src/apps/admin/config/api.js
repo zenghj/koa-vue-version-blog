@@ -40,7 +40,7 @@ export function deleteArticle (id) {
 }
 
 export function updateArticle (id, payload) {
-  return axios.put(`/acticle/${id}`, {
+  return axios.put(`/article/${id}`, {
     ...payload
   })
 }

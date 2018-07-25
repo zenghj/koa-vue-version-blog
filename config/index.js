@@ -14,15 +14,6 @@ exports.paths = {
   client: '/blog/client',
   clientHtml: path.resolve(__dirname, '../web/dist/client.html'),
   apiPrefix: '/blog/api',
-  getUploadDestPath: (file) => {
-    const date = new Date()
-    const path = `/${date.getFullYear()}/${date.getMonth}/${date.getDay}/${date.getSeconds}`
-    const serverPathPrefix =  `/apps/static/upload`
-    return {
-      path: `${serverPathPrefix}/${path}`,
-      // url: 
-    }
-  }
 }
 
 exports.DBHost = 'mongodb://localhost:27017/my-blog'
