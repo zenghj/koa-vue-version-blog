@@ -49,7 +49,7 @@ router.get('/article/:id', async (ctx, next) => {
     .catch(createCatchErrFn(ctx, '获取失败'))
 })
 
-router.get('/articles', checkAuth, async (ctx, next) => {
+router.get('/articles', async (ctx, next) => {
   await Article.$readList(ctx.query)
     .then(result => {
       ctx.body = {
