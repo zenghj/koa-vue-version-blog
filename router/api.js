@@ -60,7 +60,7 @@ router.get('/articles', checkAuth, async (ctx, next) => {
     .catch(createCatchErrFn(ctx))
 })
 
-router.put('/acticle/:id', checkAuth, async (ctx, next) => {
+router.put('/article/:id', checkAuth, async (ctx, next) => {
   await Article.$update({
     id: ctx.params.id,
     ...ctx.request.body

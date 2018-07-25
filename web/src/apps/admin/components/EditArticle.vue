@@ -3,17 +3,17 @@
     <header class="">
       <el-input class="input" :value="form.title" @input="updateTitle" placeholder="请输入标题"></el-input>
       <div class="actions">
-        <el-upload
-          class="upload-img"
+        <el-upload class="upload-img" 
           :action="URLS.uploadImgApi"
-          :on-success="handleUploadImgSuccess"
-          :on-error="handleUploadImgFail"
-          name="img"
-          :show-file-list="false"
-        >
+          :on-progress="handleUploading"
+          :on-change="handleUploadEnd"
+          :on-success="handleUploadImgSuccess" 
+          :on-error="handleUploadImgFail" 
+          name="img" 
+          :show-file-list="false">
           <i class="el-icon-picture"></i>
-          
         </el-upload>
+        <a v-if="id" :href="`${URLS.client}#/articles/${id}`" target="_blank" ><el-button type="text">预览</el-button></a>
         <router-link :to="{name: 'draftArticles'}" target="_blank">
           <el-button type="text">草稿箱</el-button>
         </router-link>
@@ -22,9 +22,12 @@
       </div>
     </header>
     <main id="editor" class="clearfix">
-      <textarea ref="textarea" class="fl" :value="form.rawContent" @input="update" name="" id="" placeholder="请输入文章内容"></textarea>
-      <div class="preview fr markdown-body" v-html="content"></div>
+      <textarea ref="textarea" :value="form.rawContent" @input="update" @scroll="handleScroll($event, 'textarea')" placeholder="请输入文章内容" class="fl"></textarea>
+      <div ref="previewer" class="preview fr markdown-body" v-html="content" @scroll="handleScroll($event, 'previewer')"></div>
     </main>
+    <div v-show="imgUploading" class="img-uploading-mask">
+      <div class="center"></div>
+    </div>
   </section>
 </template>
 
@@ -76,7 +79,22 @@ export default {
         rawContent: '',
       },
       id: '',
+      editors: {
+        textarea: {
+          forcedSrolling: false,
+          ele: null,
+        },
+        previewer: {
+          forcedSrolling: false,
+          ele: null,
+        }
+      },
+      imgUploading: false,
     }
+  },
+  mounted() {
+    this.editors.textarea.ele = this.$refs.textarea
+    this.editors.previewer.ele = this.$refs.previewer
   },
   computed: {
     content () {
@@ -152,6 +170,12 @@ export default {
       })
     },
 
+    handleUploading () {
+      this.imgUploading = true
+    },
+    handleUploadEnd () {
+      this.imgUploading = false
+    },
     handleUploadImgSuccess (data) {
       const {state, result = {}} = data
       if(state === 1) {
@@ -160,11 +184,40 @@ export default {
         const rawContent = this.form.rawContent
         this.form.rawContent = rawContent.slice(0, selectionEnd) + geneImgCode(result.url) + 
           rawContent.slice(selectionEnd)
+        this.$nextTick(() => {
+          this.saveDraft()
+        })
       }
     },
     handleUploadImgFail (err) {
       this.$message.error('上传失败')
-    }
+    },
+    handleScroll(e, refName) {
+      const target = this.editors[refName]
+      const targetEle = target.ele
+      if(target.forcedSrolling) return;
+      const otherName = refName === 'textarea' ? 'previewer' : 'textarea'
+      const other = this.editors[otherName]
+      const otherEle = other.ele
+      other.forcedSrolling = true
+      console.log('forcedSrolling', otherName)
+      this.scrollOtherBaseOne(targetEle, otherEle)
+      setTimeout(() => {
+        other.forcedSrolling = false
+        console.log('cancel forcedSrolling', otherName)
+      }, 100)
+    },
+    scrollOtherBaseOne(one, other) {
+      const scrollT = one.scrollTop
+      const scrollH = one.scrollHeight
+      const clientH = one.clientHeight
+      const rate = scrollT / (scrollH - clientH)
+
+      const otherScrollH = other.scrollHeight
+      const otherClientH = other.clientHeight
+      const otherScrollT = Math.ceil((otherScrollH - otherClientH) * rate)
+      other.scrollTop = otherScrollT
+    },
   }
 }
 </script>
@@ -211,6 +264,23 @@ export default {
     height: calc(~'100% - 3em');
     .preview {
       overflow-y: scroll;
+    }
+  }
+  .img-uploading-mask {
+    position: fixed;
+    top: 0;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    background: #fff;
+    opacity: 0.5;
+    z-index: 999;
+    cursor: not-allowed;
+    .center {
+      position: absolute;
+      top: 50%;
+      left: 50%;
+      transform: translateX(-50%, -50%);
     }
   }
 }
