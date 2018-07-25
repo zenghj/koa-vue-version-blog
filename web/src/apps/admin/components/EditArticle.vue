@@ -3,6 +3,17 @@
     <header class="">
       <el-input class="input" :value="form.title" @input="updateTitle" placeholder="请输入标题"></el-input>
       <div class="actions">
+        <el-upload
+          class="upload-img"
+          :action="URLS.uploadImgApi"
+          :on-success="handleUploadImgSuccess"
+          :on-error="handleUploadImgFail"
+          name="img"
+          :show-file-list="false"
+        >
+          <i class="el-icon-picture"></i>
+          
+        </el-upload>
         <router-link :to="{name: 'draftArticles'}" target="_blank">
           <el-button type="text">草稿箱</el-button>
         </router-link>
@@ -11,7 +22,7 @@
       </div>
     </header>
     <main id="editor" class="clearfix">
-      <textarea class="fl" :value="form.rawContent" @input="update" name="" id="" placeholder="请输入文章内容"></textarea>
+      <textarea ref="textarea" class="fl" :value="form.rawContent" @input="update" name="" id="" placeholder="请输入文章内容"></textarea>
       <div class="preview fr markdown-body" v-html="content"></div>
     </main>
   </section>
@@ -20,8 +31,12 @@
 <script>
 import marked from 'marked'
 import _ from 'lodash'
-import {saveAsDraft, publishArticle, getArticleInfo, updateArticle} from '../config/api.js'
+import {saveAsDraft, publishArticle, getArticleInfo, updateArticle, uploadImg} from '../config/api.js'
 import '../../../assets/less/markdown.less'
+
+function geneImgCode (url) {
+  return `![](${url})`
+}
 export default {
   beforeRouteEnter (to, from, next) {
     const id = to.query.id
@@ -135,6 +150,20 @@ export default {
         console.error(err)
         this.$message.error('发布失败')
       })
+    },
+
+    handleUploadImgSuccess (data) {
+      const {state, result = {}} = data
+      if(state === 1) {
+        const textarea = this.$refs.textarea
+        const selectionEnd = textarea.selectionEnd
+        const rawContent = this.form.rawContent
+        this.form.rawContent = rawContent.slice(0, selectionEnd) + geneImgCode(result.url) + 
+          rawContent.slice(selectionEnd)
+      }
+    },
+    handleUploadImgFail (err) {
+      this.$message.error('上传失败')
     }
   }
 }
@@ -142,6 +171,7 @@ export default {
 
 <style lang="less">
 @import './less/editor.less';
+@import '../../../assets/less/vars.less';
 @headerHeight: 3em;
 .edit-article {
   height: 100vh;
@@ -165,12 +195,22 @@ export default {
       top: 50%;
       transform: translateY(-50%);
       right: 1em;
+      .upload-img {
+        display: inline-block;
+      }
+      .el-icon-picture {
+        color: @primaryColor;
+        cursor: pointer;
+        &:hover {
+          color: lighten(@primaryColor, 10%);
+        }
+      }
     }
   }
   #editor {
     height: calc(~'100% - 3em');
     .preview {
-      overflow: scroll;
+      overflow-y: scroll;
     }
   }
 }

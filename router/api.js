@@ -1,3 +1,6 @@
+const fs = require('fs')
+const os = require('os')
+const path = require('path')
 const Router = require('koa-router');
 const {Article} = require('../db');
 const {resErrorLog} = require('../lib/logger')
@@ -90,6 +93,20 @@ router.delete('/article/:id', checkAuth, async (ctx, next) => {
       }
     })
     .catch(createCatchErrFn(ctx))
+})
+
+
+router.post('/upload/img', async (ctx, next) => {
+  const file = ctx.request.files.img
+  const reader = fs.createReadStream(file.path)
+  const stream = fs.createWriteStream(path.join(os.tmpdir(), Math.random().toString()));
+  reader.pipe(stream);
+  console.log(file)
+  console.log('uploading %s %s -> %s', file.name, file.path, stream.path);
+  ctx.body = {
+    state: 1,
+    msg: '上传成功',
+  }
 })
 
 module.exports = router
