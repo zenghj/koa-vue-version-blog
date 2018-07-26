@@ -1,7 +1,7 @@
 <template>
   <div class="articles">
     <el-row class="clearfix title">
-      <h1 class="fl">Article List</h1>
+      <h1 class="fl">在线文章</h1>
     </el-row>
     <el-card v-for="(item,index) in list" :key="index" class="article-item">
       <div slot="header">

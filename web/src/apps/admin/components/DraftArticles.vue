@@ -2,7 +2,7 @@
   <div class="articles">
     <my-header></my-header>
     <el-row class="clearfix title">
-      <h1 class="fl">草稿箱</h1>
+      <h3 class="fl">草稿箱</h3>
     </el-row>
     <el-table
     :data="computedList"

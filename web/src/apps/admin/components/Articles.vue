@@ -2,7 +2,7 @@
   <div class="articles">
     <my-header></my-header>
     <el-row class="clearfix title">
-      <h1 class="fl">文章管理后台</h1>
+      <h3 class="fl">文章管理后台</h3>
       <router-link :to="{name: 'editArticle'}" class="fr"><el-button type="text">发布新文章</el-button></router-link>
     </el-row>
     
