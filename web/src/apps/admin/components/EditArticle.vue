@@ -141,6 +141,11 @@ export default {
         updateArticle(this.id, payload).then(({data}) => {
           if (data.state === 1) {
             event && this.$message.success(sucMsg)
+            let resultId = data.result._id
+            if(this.id !== resultId) {
+              this.id = resultId
+              this.$router.push(`/editArticle?id=${this.id}`)
+            }
           } else {
             this.$message.error(errMsg)
           }

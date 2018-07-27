@@ -2,6 +2,11 @@ const mongoose = require('mongoose')
 const mongoosePaginate = require('mongoose-paginate');
 const Schema = mongoose.Schema
 
+const STATUSES = {
+  draft: 0,
+  published: 1,
+  deleted: -1,
+}
 const articleSchema = new Schema({
   createAt: {
     type: Date,
@@ -12,7 +17,7 @@ const articleSchema = new Schema({
   },
   status: {
     type: Number, // '0: 草稿箱， 1: 已发布， -1 已删除
-    default: 0,
+    default: STATUSES.draft,
   },
   title: {
     type: String,
@@ -23,6 +28,9 @@ const articleSchema = new Schema({
     type: String,
   },
   rawContent: {
+    type: String,
+  },
+  parentId: {
     type: String,
   }
 })
@@ -41,17 +49,18 @@ const Article = mongoose.model('Article', articleSchema)
 
 
 const methods = {};
-methods.$create = ({status = 1, title, content, rawContent}) => {
+methods.$create = ({status = STATUSES.published, title, content, rawContent, parentId}) => {
   const article = new Article({
     status,
     title,
     content,
     rawContent,
+    parentId,
   });
   return article.save();
 }
 
-methods.$read = ({id}) => {
+methods.$readById = id => {
   return new Promise((resolve, reject) => {
     Article.findById(id, (err, doc) => {
       if(err) {
@@ -62,10 +71,21 @@ methods.$read = ({id}) => {
   });
 }
 
-methods.$readList = ({page, limit, status}) => {
+methods.$query = query => {
+  return new Promise((resolve, reject) => {
+    Article.find(query, function(err, docs) {
+      if(err) {
+        return reject(err)
+      }
+      resolve(docs)
+    })
+  })
+}
+
+methods.$readList = ({page, limit, status = STATUSES.draft}) => {
   return new Promise((resolve, reject) => {
     Article.paginate({
-      status: (status ? status : 0)
+      status,
     }, {
       page, 
       limit,
@@ -79,21 +99,43 @@ methods.$readList = ({page, limit, status}) => {
 }
 
 methods.$update = ({id, ...rest}) => {
-  return new Promise((resolve, reject) => {
-    Article.findByIdAndUpdate(id, {
-      ...rest
-    }, (err, doc) => {
-      if(err) {
-        return reject(err)
-      }
-      if(doc) {
-        resolve(doc)
-      } else {
-        reject({code: -1, msg: '不存在此记录'})
-      }
-      
-    })
-  });
+  return (async () => {
+    let doc = await methods.$readById(id)
+    if(!doc) {
+      return {code: -1, msg: '不存在此记录'}
+    }
+    let docs = await methods.$query({parentId: id})
+    let draftDoc = (docs && docs.length > 0 ) ? docs[0] : null
+    let updated
+    if(doc.status === STATUSES.published && draftDoc == null) {
+      updated = await methods.$create({
+          ...doc,
+          ...rest,
+          status: STATUSES.draft,
+          parentId: id,
+        })
+    } else {
+      if(draftDoc) doc = draftDoc
+      updated = await updateOrPublishDoc(doc, rest)
+    }
+    return updated
+  })()
+}
+
+async function updateOrPublishDoc(doc, update) {
+  Object.assign(doc, update, {updateAt: Date.now()})
+
+  let parentId = doc.parentId
+  let ret
+  if (update.status === STATUSES.published && parentId) {
+    doc.parentId = null
+    doc.createAt = Date.now()
+    ret = await doc.save()
+    await methods.$delete(parentId)
+  } else {
+    ret = await doc.save()
+  }
+  return ret
 }
 
 methods.$delete = (id) => {

@@ -22,7 +22,10 @@ router.get('/test', async (ctx, next, x) => {
   console.log(ctx)
 })
 
-// 创建文章： 发布 & 存草稿
+/**
+ * 创建文章： 发布 & 存草稿
+ * ctx.request.body
+ */ 
 router.post('/article', checkAuth, async (ctx, next, xx) => {
   await Article.$create({
     ...ctx.request.body
@@ -31,15 +34,19 @@ router.post('/article', checkAuth, async (ctx, next, xx) => {
     console.log(doc)
     ctx.body = {
       state: 1,
-      msg: '发布成功',
+      msg: '创建成功',
       result: doc,
     }
   })
   .catch(createCatchErrFn(ctx, '创建失败'))
 })
 
+/**
+ * 获取文章详细内容
+ * ctx.params.id
+ */
 router.get('/article/:id', async (ctx, next) => {
-  await Article.$read(ctx.params)
+  await Article.$readById(ctx.params.id)
     .then(doc => {
       ctx.body = {
         state: doc ? 1 : -1,
@@ -49,6 +56,9 @@ router.get('/article/:id', async (ctx, next) => {
     .catch(createCatchErrFn(ctx, '获取失败'))
 })
 
+/**
+ * 获取文章列表
+ */
 router.get('/articles', async (ctx, next) => {
   await Article.$readList(ctx.query)
     .then(result => {
@@ -60,6 +70,11 @@ router.get('/articles', async (ctx, next) => {
     .catch(createCatchErrFn(ctx))
 })
 
+/**
+ * 更新文章
+ * ctx.params.id
+ * ctx.request.body
+ */
 router.put('/article/:id', checkAuth, async (ctx, next) => {
   await Article.$update({
     id: ctx.params.id,
@@ -83,7 +98,9 @@ router.put('/article/:id', checkAuth, async (ctx, next) => {
 // router.post('/article/:id', async (ctx, next) => {
 
 // })
-
+/**
+ * 删除文章
+ */
 router.delete('/article/:id', checkAuth, async (ctx, next) => {
   await Article.$delete(ctx.params.id)
     .then((result) => {
