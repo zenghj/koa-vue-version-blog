@@ -2,18 +2,18 @@
   <section class="edit-article">
     <header class="">
       <el-input class="input" :value="form.title" @input="updateTitle" placeholder="请输入标题"></el-input>
+
       <div class="actions">
-        <el-upload class="upload-img" 
-          :action="URLS.uploadImgApi"
-          :on-progress="handleUploading"
-          :on-change="handleUploadEnd"
-          :on-success="handleUploadImgSuccess" 
-          :on-error="handleUploadImgFail" 
-          name="img" 
-          :show-file-list="false">
+        <el-select v-model="form.category" placeholder="请选择文章分类" @change="handleCategoryChange">
+          <el-option v-for="item in categories" :key="item._id" :label="item.name" :value="item.name">
+          </el-option>
+        </el-select>
+        <el-upload class="upload-img" :action="URLS.uploadImgApi" :on-progress="handleUploading" :on-change="handleUploadEnd" :on-success="handleUploadImgSuccess" :on-error="handleUploadImgFail" name="img" :show-file-list="false">
           <i class="el-icon-picture"></i>
         </el-upload>
-        <a v-if="id" :href="`${URLS.client}#/articles/${id}`" target="_blank" ><el-button type="text">预览</el-button></a>
+        <a v-if="id" :href="`${URLS.client}#/articles/${id}`" target="_blank">
+          <el-button type="text">预览</el-button>
+        </a>
         <router-link :to="{name: 'draftArticles'}" target="_blank">
           <el-button type="text">草稿箱</el-button>
         </router-link>
@@ -34,7 +34,7 @@
 <script>
 import marked from 'marked'
 import _ from 'lodash'
-import {saveAsDraft, publishArticle, getArticleInfo, updateArticle, uploadImg} from '../config/api.js'
+import {saveAsDraft, publishArticle, getArticleInfo, updateArticle, uploadImg, getCategoryories} from '../config/api.js'
 import '../../../assets/less/markdown.less'
 
 function geneImgCode (url) {
@@ -52,6 +52,7 @@ export default {
             next(vm => {
               vm.form.title = result.title || ''
               vm.form.rawContent = result.rawContent || ''
+              vm.form.category = result.category
               vm.id = id
             })
           } else {
@@ -77,7 +78,9 @@ export default {
       form: {
         title: '',
         rawContent: '',
+        category: ''
       },
+      categories: [],
       id: '',
       editors: {
         textarea: {
@@ -91,6 +94,15 @@ export default {
       },
       imgUploading: false,
     }
+  },
+  created () {
+    getCategoryories().then(({data}) => {
+      if(data.state === 1) {
+        this.categories = data.result.list
+      } else {
+        this.$message.error('初始化文章分类列表失败')
+      }
+    })
   },
   mounted() {
     this.editors.textarea.ele = this.$refs.textarea
@@ -120,6 +132,7 @@ export default {
         content: this.content,
         status: 0,
         rawContent: this.form.rawContent,
+        category: this.form.category,
       }
       let errMsg = event ? '保存失败' : '自动保存失败'
       let sucMsg = '保存成功'
@@ -222,6 +235,12 @@ export default {
       const otherClientH = other.clientHeight
       const otherScrollT = Math.ceil((otherScrollH - otherClientH) * rate)
       other.scrollTop = otherScrollT
+    },
+    handleCategoryChange (value) {
+      this.form.category = value
+      this.$nextTick(() => {
+        this.saveDraft()
+      })
     },
   }
 }

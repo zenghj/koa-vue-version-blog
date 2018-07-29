@@ -32,8 +32,13 @@ const articleSchema = new Schema({
   },
   parentId: {
     type: String,
+  },
+  category: {
+    type: String,
   }
 })
+
+const cloneKeys = ['updateAt', 'status', 'title', 'content', 'rawContent']
 
 // articleSchema.pre('save', function(next) {
 //   if(this.title) {
@@ -49,13 +54,14 @@ const Article = mongoose.model('Article', articleSchema)
 
 
 const methods = {};
-methods.$create = ({status = STATUSES.published, title, content, rawContent, parentId}) => {
+methods.$create = ({status = STATUSES.published, title, content, rawContent, parentId, category}) => {
   const article = new Article({
     status,
     title,
     content,
     rawContent,
     parentId,
+    category,
   });
   return article.save();
 }

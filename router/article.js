@@ -3,20 +3,11 @@ const os = require('os')
 const path = require('path')
 const Router = require('koa-router');
 const {Article} = require('../db');
-const {resErrorLog} = require('../lib/logger')
 const checkAuth = require('../middlewares/checkAuth')
+const {createCatchErrFn} = require('./utils')
 
-router = new Router();
+const router = new Router();
 
-function createCatchErrFn(ctx, msg) {
-  return err => {
-    resErrorLog(ctx, err)
-    ctx.body = {
-      state: -1,
-      msg: msg || '接口响应失败',
-    }
-  }
-}
 router.get('/test', async (ctx, next, x) => {
   ctx.body = 'hello world';
   console.log(ctx)

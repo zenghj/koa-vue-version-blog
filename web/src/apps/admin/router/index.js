@@ -3,6 +3,7 @@ import Router from 'vue-router'
 const Articles = () => import('../components/Articles.vue')
 const EditArticle = () => import('../components/EditArticle.vue')
 const DraftArticles = () => import('../components/DraftArticles.vue')
+const CategoryManage = () => import('../components/CategoryManage.vue')
 
 Vue.use(Router)
 
@@ -27,6 +28,10 @@ export default new Router({
       path: '/draftArticles',
       name: 'draftArticles',
       component: DraftArticles
+    }, {
+      path: '/CategoryManage',
+      name: 'CategoryManage',
+      component: CategoryManage,
     }
   ]
 })

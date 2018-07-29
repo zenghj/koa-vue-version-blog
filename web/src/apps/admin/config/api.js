@@ -1,4 +1,5 @@
 import axios from 'axios'
+import {Message} from 'element-ui'
 
 export function saveAsDraft (payload) {
   return axios.post('/article', payload)
@@ -42,5 +43,27 @@ export function deleteArticle (id) {
 export function updateArticle (id, payload) {
   return axios.put(`/article/${id}`, {
     ...payload
+  })
+}
+
+export function getCategoryories () {
+  return axios.get('/categories').catch(err => {
+    Message.error(err.msg || '获取Categoryories失败')
+  })
+}
+
+export function delCategoryory (name) {
+  return axios.delete('/category', {
+    data: {
+      name,
+    }
+  }).catch(err => {
+    Message.error(err.msg || '获取Categoryories失败')
+  })
+}
+
+export function createCategory (payload) {
+  return axios.post('/category', payload).catch(err => {
+    Message.error(err.msg || '创建失败')
   })
 }

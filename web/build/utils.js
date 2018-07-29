@@ -118,9 +118,6 @@ exports.getEntries = () => {
   const apps = getAppNames()
   const entries = {}
   apps.forEach(appName => {
-    // const stats = fs.statSync(path.resolve(paths.APPS, appName));
-    // const appEntryFile
-    // if(stats.isDirectory())
     const appEntryFilePath = path.resolve(paths.APPS, `${appName}/main.js`)
     entries[appName] = appEntryFilePath
   })

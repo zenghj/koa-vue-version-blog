@@ -1,14 +1,8 @@
 <template>
   <header id="admin-header">
     <el-menu mode="horizontal">
-      <el-menu-item index="1">
-        <router-link :to="{name: 'articles'}">在线文章</router-link>
-      </el-menu-item>
-      <el-menu-item index="2">
-        <router-link :to="{name: 'draftArticles'}">草稿箱</router-link>
-      </el-menu-item>
-      <el-menu-item index="3">
-        <router-link :to="{name: 'editArticle'}">发布新文章</router-link>
+      <el-menu-item v-for="(item, index) in links" :key="index" :index="'' + index">
+        <router-link :to="{name: item.name}">{{item.text}}</router-link>
       </el-menu-item>
     </el-menu>
   </header>
@@ -19,6 +13,21 @@
     data () {
       return {
         activeIndex: '1',
+        links: [
+          {
+            name: 'articles',
+            text: '在线文章',
+          }, {
+            name: 'draftArticles',
+            text: '草稿箱',
+          }, {
+            name: 'editArticle',
+            text: '发布新文章',
+          }, {
+            name: 'CategoryManage',
+            text: '分类管理',
+          }
+        ]
       }
     }
   }
