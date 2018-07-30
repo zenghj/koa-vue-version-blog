@@ -3,7 +3,7 @@ const path = require('path')
 const axios = require('axios')
 const Router = require('koa-router')
 const articleRouter = require('./article')
-const CategoryRouter = require('./Category')
+const categoryRouter = require('./category')
 const checkAuth = require('../middlewares/checkAuth')
 const {paths} = require('../config')
 
@@ -19,6 +19,6 @@ router.get(paths.client, async ctx => {
 })
 router.use(paths.apiPrefix, articleRouter.routes())
 
-router.use(paths.apiPrefix, CategoryRouter.routes())
+router.use(paths.apiPrefix, categoryRouter.routes())
 
 module.exports = router
