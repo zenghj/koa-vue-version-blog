@@ -205,6 +205,8 @@ export default {
         this.$nextTick(() => {
           this.saveDraft()
         })
+      } else {
+        this.$message.error(data.msg || '上传失败')
       }
     },
     handleUploadImgFail (err) {

@@ -4,6 +4,9 @@
       <el-menu-item v-for="(item, index) in links" :key="index" :index="'' + index">
         <router-link :to="{name: item.name}">{{item.text}}</router-link>
       </el-menu-item>
+      <el-menu-item :index="links.length">
+        <a :href="`${URLS.client}#/articles`">客户端</a>
+      </el-menu-item>
     </el-menu>
   </header>
 

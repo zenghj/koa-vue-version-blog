@@ -128,10 +128,13 @@ export default {
     .article-items {
       display: flex;
       flex-direction: row;
-      flex: 0 0 18.5em;
+      flex: 0 0 23em;
       align-items: flex-start;
       justify-content: space-between;
       flex-wrap: wrap;
+    }
+    .article-item {
+      min-width: 23em;
     }
   }
   @media screen and (max-width: 500px) {
@@ -142,7 +145,6 @@ export default {
   .article-item {
     display: block;
     margin-bottom: 1em;
-    width: inherit;
     .card {
       position: relative;
       // width: 18em;
