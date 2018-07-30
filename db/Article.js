@@ -1,5 +1,6 @@
 const mongoose = require('mongoose')
 const mongoosePaginate = require('mongoose-paginate');
+const {OTHERS} = require('./constants')
 const Schema = mongoose.Schema
 
 const STATUSES = {
@@ -35,6 +36,7 @@ const articleSchema = new Schema({
   },
   category: {
     type: String,
+    default: OTHERS,
   }
 })
 
@@ -54,7 +56,7 @@ const Article = mongoose.model('Article', articleSchema)
 
 
 const methods = {};
-methods.$create = ({status = STATUSES.published, title, content, rawContent, parentId, category}) => {
+methods.$create = ({status = STATUSES.published, title, content, rawContent, parentId, category = OTHERS}) => {
   const article = new Article({
     status,
     title,
@@ -88,10 +90,17 @@ methods.$query = query => {
   })
 }
 
-methods.$readList = ({page, limit, status = STATUSES.draft}) => {
+methods.$readList = ({page, limit, status = STATUSES.draft, keyword = '', category = ''}) => {
   return new Promise((resolve, reject) => {
+    let query = {status}
+    keyword !== '' && (query.title = new RegExp(keyword, 'i'))
+    category !== '' && (query.category = category)
+    category === OTHERS && (query.category = {
+      $in: ['', OTHERS]
+    })
+    
     Article.paginate({
-      status,
+      ...query
     }, {
       page, 
       limit,

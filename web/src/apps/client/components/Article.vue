@@ -1,6 +1,6 @@
 <template>
   <section class="article markdown-body" >
-    <my-header></my-header>
+    <!-- <my-header></my-header> -->
     <h1>{{article.title}}</h1>
     <div v-html="article.content" class=""></div>
   </section>
@@ -9,7 +9,7 @@
 <script>
 import {getArticleInfo} from '../config/api.js'
 import '../../../assets/less/markdown.less'
-import MyHeader from './MyHeader.vue'
+// import MyHeader from './MyHeader.vue'
 export default {
   props: ['id'],
   created() {
@@ -32,9 +32,9 @@ export default {
       article: {}
     }
   },
-  components: {
-    MyHeader,
-  }
+  // components: {
+  //   MyHeader,
+  // }
 }
 </script>
 

@@ -1,4 +1,5 @@
 const mongoose = require('mongoose')
+const {OTHERS} = require('./constants')
 const Schema = mongoose.Schema
 
 const CategorySchema = new Schema({
@@ -8,7 +9,7 @@ const CategorySchema = new Schema({
   },
 })
 
-const OTHERS = 'others'
+
 
 const Category = mongoose.model('Category', CategorySchema)
 
