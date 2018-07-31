@@ -48,7 +48,7 @@ export default {
       getArticleInfo(id)
         .then(({data}) => {
           const {result, state} = data
-          console.log(result)
+          // console.log(result)
           if (state === 1) {
             next(vm => {
               vm.form.title = result.title || ''
@@ -109,9 +109,11 @@ export default {
     this.editors.textarea.ele = this.$refs.textarea
     this.editors.previewer.ele = this.$refs.previewer
     document.addEventListener('keydown', this.handleCtrlS)
+    document.addEventListener('keydown', this.handleTab)
   },
   unmounted () {
     document.removeEventListener('keydown', this.handleCtrlS)
+    document.removeEventListener('keydown', this.handleTab)
   },
   computed: {
     content () {
@@ -250,7 +252,6 @@ export default {
       })
     },
     handleCtrlS (e) {
-      console.log(e)
       // win 组合键 ctrl + s
       // mac 不是组合键 是连续两次按键 command + s
       if((e.ctrlKey || this.handleCtrlS._lastKeyIsCMD)&& e.keyCode === KEYCODES.s) { 
@@ -258,6 +259,23 @@ export default {
         this.saveDraft()
       }
       this.handleCtrlS._lastKeyIsCMD = e.keyCode === KEYCODES.Meta
+    },
+    handleTab (e) {
+      let target = e.target
+      if(target === this.editors.textarea.ele && e.keyCode === KEYCODES.tab) {
+        e.preventDefault()
+        // console.log(target.selectionStart, target.selectionEnd)
+        let start = target.selectionStart
+        let end = target.selectionEnd
+        let rawContent = this.form.rawContent
+        this.form.rawContent = rawContent.slice(0, start) + '\t' + rawContent.slice(start)
+        this.$nextTick(() => {
+          // 必须通过$nextTick的形式在dom更新之后更新target.selectionStart
+          // 并且不能是target.selectionStart += 1 
+          target.selectionStart = start + 1 
+          target.selectionEnd = end + 1
+        })
+      }
     }
   }
 }

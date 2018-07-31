@@ -1,10 +1,10 @@
 <template>
   <header id="admin-header">
     <el-menu mode="horizontal">
-      <el-menu-item v-for="(item, index) in links" :key="index" :index="'' + index">
+      <el-menu-item v-for="(item, index) in links" :key="index" :index="String(index)">
         <router-link :to="{name: item.name}">{{item.text}}</router-link>
       </el-menu-item>
-      <el-menu-item :index="links.length">
+      <el-menu-item :index="String(links.length)">
         <a :href="`${URLS.client}#/articles`">客户端</a>
       </el-menu-item>
     </el-menu>
