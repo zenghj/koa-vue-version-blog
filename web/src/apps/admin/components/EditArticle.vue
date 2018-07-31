@@ -35,6 +35,7 @@
 import marked from 'marked'
 import _ from 'lodash'
 import {saveAsDraft, publishArticle, getArticleInfo, updateArticle, uploadImg, getCategoryories} from '../config/api.js'
+import {KEYCODES} from '../../../assets/js/constants.js'
 import '../../../assets/less/markdown.less'
 
 function geneImgCode (url) {
@@ -104,9 +105,13 @@ export default {
       }
     })
   },
-  mounted() {
+  mounted () {
     this.editors.textarea.ele = this.$refs.textarea
     this.editors.previewer.ele = this.$refs.previewer
+    document.addEventListener('keydown', this.handleCtrlS)
+  },
+  unmounted () {
+    document.removeEventListener('keydown', this.handleCtrlS)
   },
   computed: {
     content () {
@@ -132,7 +137,7 @@ export default {
         content: this.content,
         status: 0,
         rawContent: this.form.rawContent,
-        category: this.form.category,
+        category: this.form.category || 'others',
       }
       let errMsg = event ? '保存失败' : '自动保存失败'
       let sucMsg = '保存成功'
@@ -244,6 +249,16 @@ export default {
         this.saveDraft()
       })
     },
+    handleCtrlS (e) {
+      console.log(e)
+      // win 组合键 ctrl + s
+      // mac 不是组合键 是连续两次按键 command + s
+      if((e.ctrlKey || this.handleCtrlS._lastKeyIsCMD)&& e.keyCode === KEYCODES.s) { 
+        e.preventDefault()
+        this.saveDraft()
+      }
+      this.handleCtrlS._lastKeyIsCMD = e.keyCode === KEYCODES.Meta
+    }
   }
 }
 </script>
