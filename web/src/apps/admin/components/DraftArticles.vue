@@ -14,6 +14,10 @@
       >
     </el-table-column>
     <el-table-column
+      prop="category"
+      label="所属分类"
+      />
+    <el-table-column
       prop="createAt"
       label="创建日期"
       >

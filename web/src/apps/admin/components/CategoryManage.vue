@@ -7,10 +7,10 @@
       </h3>
 
       <div class="tags">
-        <el-tag class="tag" v-for="tag in list" :key="tag.name" closable :type="tag.type" @close="handleClose($event, tag)">
+        <el-tag class="tag" v-for="tag in list" :key="tag.name" :closable="tag.name !== 'others'" :type="tag.type" @close="handleClose($event, tag)">
         {{tag.name}}
       </el-tag>
-      <el-form inline class="inline-block">
+      <el-form inline class="inline-block tag">
         <el-form-item>
           <el-input placeholder="请输入内容" v-model="input">
             <el-button slot="append" type="text" @click="createCate">添加分类</el-button>
@@ -96,14 +96,15 @@ export default {
   h3 {
     // margin-bottom:
   }
-  .tags {
-    margin-top: 1em;
-  }
+  // .tags {
+  //   margin-top: 1em;
+  // }
   .tag {
     height: 40px;
     line-height: 40px;
     vertical-align: top;
     margin-right: 1em;
+    margin-top: 1em;
     font-size: 14px;
   }
 }

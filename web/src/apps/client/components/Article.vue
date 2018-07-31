@@ -1,7 +1,8 @@
 <template>
   <section class="article markdown-body" >
     <!-- <my-header></my-header> -->
-    <h1>{{article.title}}</h1>
+    <h1>{{article.title}} <span class="small">{{formatTime(article.createAt, 'YYYY/MM/DD')}}
+      <router-link :to="{name: 'articles', query: {category: article.category}}">[{{article.category}}]</router-link></span></h1>
     <div v-html="article.content" class=""></div>
   </section>
 </template>
@@ -9,7 +10,7 @@
 <script>
 import {getArticleInfo} from '../config/api.js'
 import '../../../assets/less/markdown.less'
-// import MyHeader from './MyHeader.vue'
+import formatTime from '../../../assets/js/timeHelper.js'
 export default {
   props: ['id'],
   created() {
@@ -32,13 +33,17 @@ export default {
       article: {}
     }
   },
-  // components: {
-  //   MyHeader,
-  // }
+  methods: {
+    formatTime,
+  }
 }
 </script>
 
-<style>
-
+<style scoped lang="less">
+@import '../../../assets/less/vars.less';
+.small {
+  font-size: @smallFont;
+  color: @gray;
+}
 </style>
 

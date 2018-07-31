@@ -7,6 +7,7 @@
       <div class="tags">
         <el-tag v-for="(item, index) in categoryories" :key="index" class="tag" :type="activeTagName === item.name ? 'success' : 'info'" @click.native="handleTagClick($event, item)">{{item.name}}</el-tag>
       </div>
+      <p class="total-count">总共{{list.length}}条记录</p>
       <div class="article-items">
         <router-link class="article-item" v-for="(item,index) in list" :key="index" :to="{name: 'article', params: {id: item._id}}">
           <el-card class="card">
@@ -16,10 +17,12 @@
               </h2>
             </div>
             <div class="des">
+              <p>所属分类: {{item.category}}</p>
               <p>创建于: {{formatTime(item.createAt)}}</p>
             </div>
           </el-card>
         </router-link>
+        <!-- <div v-if="list.length === 0" class="empty-result"></div> -->
       </div>
 
     </div>
@@ -111,19 +114,24 @@ export default {
   .container {
     margin: 0 1em;
 
-    .tags {
-      margin-bottom: 1em;
-    }
+    // .tags {
+    //   margin-bottom: 1em;
+    // }
     .tag {
       cursor: pointer;
       margin: 1em;
       margin-left: 0;
     }
     .search-input {
-      margin: 1em 0;
+      margin: 2em 0 1em 0;
     }
   }
 
+  .total-count {
+    color: @gray;
+    margin-bottom: 1em;
+    text-align: right;
+  }
   @media screen and (min-width: 500px) {
     .article-items {
       display: flex;
@@ -150,6 +158,9 @@ export default {
       // width: 18em;
       // float: left;
       // margin: 1em 1em 0 0;
+      .des {
+        font-size: 14px;
+      }
     }
     .title {
       .ellipsis();
