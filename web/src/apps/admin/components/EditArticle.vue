@@ -32,12 +32,11 @@
 </template>
 
 <script>
-import marked from 'marked'
+import marked from '../../../assets/js/marked.js'
 import _ from 'lodash'
 import {saveAsDraft, publishArticle, getArticleInfo, updateArticle, uploadImg, getCategoryories} from '../config/api.js'
 import {KEYCODES} from '../../../assets/js/constants.js'
 import '../../../assets/less/markdown.less'
-
 function geneImgCode (url) {
   return `![](${url})`
 }
@@ -117,7 +116,7 @@ export default {
   },
   computed: {
     content () {
-      return marked(this.form.rawContent, {sanitize: true})
+      return marked(this.form.rawContent)
     },
   },
   methods: {
@@ -227,11 +226,11 @@ export default {
       const other = this.editors[otherName]
       const otherEle = other.ele
       other.forcedSrolling = true
-      console.log('forcedSrolling', otherName)
+      // console.log('forcedSrolling', otherName)
       this.scrollOtherBaseOne(targetEle, otherEle)
       setTimeout(() => {
         other.forcedSrolling = false
-        console.log('cancel forcedSrolling', otherName)
+        // console.log('cancel forcedSrolling', otherName)
       }, 100)
     },
     scrollOtherBaseOne(one, other) {
@@ -271,7 +270,7 @@ export default {
         this.form.rawContent = rawContent.slice(0, start) + '\t' + rawContent.slice(start)
         this.$nextTick(() => {
           // 必须通过$nextTick的形式在dom更新之后更新target.selectionStart
-          // 并且不能是target.selectionStart += 1 
+          // 并且不能是target.selectionStart += 1 , vue更新完dom之后，textarea的selectionStart信息丢失了，重置到了末尾
           target.selectionStart = start + 1 
           target.selectionEnd = end + 1
         })
