@@ -25,8 +25,11 @@
      <el-table-column
       fixed="right"
       label="操作"
-      width="110">
+      width="138">
       <template slot-scope="scope">
+        <a :href="`${URLS.client}#/articles/${scope.row._id}`" target="_blank">
+          <el-button type="text" size="small">预览</el-button>
+        </a>
         <el-button type="text" size="small" @click="publish($event, scope.row)">发布</el-button>
         <router-link :to="`/editArticle?id=${scope.row._id}`">
             <el-button type="text" size="small">编辑</el-button>

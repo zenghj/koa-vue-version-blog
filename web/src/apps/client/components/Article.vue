@@ -9,6 +9,7 @@
 
 <script>
 import {getArticleInfo} from '../config/api.js'
+import 'highlight.js/styles/default.css'
 import '../../../assets/less/markdown.less'
 import formatTime from '../../../assets/js/timeHelper.js'
 export default {
