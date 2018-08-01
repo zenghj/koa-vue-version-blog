@@ -1,14 +1,17 @@
 const mongoose = require('mongoose')
 const mongoosePaginate = require('mongoose-paginate');
+const _ = require('lodash')
 const {OTHERS} = require('./constants')
 const Schema = mongoose.Schema
+
 
 const STATUSES = {
   draft: 0,
   published: 1,
-  deleted: -1,
+  // deleted: -1,
 }
-const articleSchema = new Schema({
+
+const schemaOpt = {
   createAt: {
     type: Date,
     default: Date.now,
@@ -38,9 +41,10 @@ const articleSchema = new Schema({
     type: String,
     default: OTHERS,
   }
-})
+}
+const articleSchema = new Schema(schemaOpt)
 
-const cloneKeys = ['updateAt', 'status', 'title', 'content', 'rawContent']
+const canUpdateKeys = _.without(Object.keys(schemaOpt), 'createAt')
 
 // articleSchema.pre('save', function(next) {
 //   if(this.title) {
@@ -113,44 +117,51 @@ methods.$readList = ({page, limit, status = STATUSES.draft, keyword = '', catego
   });
 }
 
-methods.$update = ({id, ...rest}) => {
-  return (async () => {
+methods.$update = async ({id, ...rest}) => {
     let doc = await methods.$readById(id)
     if(!doc) {
       return {code: -1, msg: '不存在此记录'}
     }
-    let docs = await methods.$query({parentId: id})
-    let draftDoc = (docs && docs.length > 0 ) ? docs[0] : null
-    let updated
-    if(doc.status === STATUSES.published && draftDoc == null) {
-      updated = await methods.$create({
-          ...doc,
-          ...rest,
-          status: STATUSES.draft,
-          parentId: id,
-        })
+    if(rest.status === STATUSES.published) {
+      return publishingDoc(doc, rest)
     } else {
-      if(draftDoc) doc = draftDoc
-      updated = await updateOrPublishDoc(doc, rest)
+      return draftingDoc(doc, rest)
     }
-    return updated
-  })()
 }
 
-async function updateOrPublishDoc(doc, update) {
-  Object.assign(doc, update, {updateAt: Date.now()})
-
+async function publishingDoc (doc, update) {
   let parentId = doc.parentId
-  let ret
-  if (update.status === STATUSES.published && parentId) {
-    doc.parentId = null
-    doc.createAt = Date.now()
-    ret = await doc.save()
-    await methods.$delete(parentId)
+  let parentDoc = parentId ? await methods.$readById(parentId) : null
+  let ret  
+  if (parentId && parentDoc) { // 草稿文章拥有对应的线上文章，根据该草稿文章更新线上文章，删除草稿文章
+    Object.assign(parentDoc, _.pick(doc, canUpdateKeys), update, {status: STATUSES.published, parentId: null})
+    ret = await parentDoc.save()
+    await methods.$delete(doc._id)
   } else {
+    Object.assign(doc, update, {status: STATUSES.published})
     ret = await doc.save()
   }
   return ret
+}
+
+async function draftingDoc (doc, update) {
+  let id = doc._id
+  let docs = await methods.$query({parentId: id})
+  let draftDoc = (docs && docs.length > 0 ) ? docs[0] : null
+  let updated
+  if(doc.status === STATUSES.published && !draftDoc) { // 该文章在线，现在要编辑并保存到草稿箱，则创建关联的下游草稿文章
+      updated = await methods.$create({
+          ..._.pick(doc, canUpdateKeys),
+          ...update,
+          status: STATUSES.draft,
+          parentId: id,
+        })
+  } else {
+      let targetDoc = draftDoc || doc
+      Object.assign(targetDoc, update, {status: STATUSES.draft})
+      updated = await targetDoc.save()
+  }
+  return updated
 }
 
 methods.$delete = (id) => {

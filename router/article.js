@@ -77,6 +77,7 @@ router.put('/article/:id', checkAuth, async (ctx, next) => {
       result,
     }
   }).catch(err => {
+    console.error(err)
     ctx.body = {
       state: -1,
       msg: err.msg,
