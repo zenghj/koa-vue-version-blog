@@ -33,7 +33,8 @@
 
 <script>
 import marked from '../../../assets/js/marked.js'
-import _ from 'lodash'
+// import {debounce} from 'lodash' // lodash didn't tree shaking properly
+const debounce = require('lodash/debounce')
 import {saveAsDraft, publishArticle, getArticleInfo, updateArticle, uploadImg, getCategoryories} from '../config/api.js'
 import {KEYCODES} from '../../../assets/js/constants.js'
 import '../../../assets/less/markdown.less'
@@ -120,13 +121,13 @@ export default {
     },
   },
   methods: {
-    update: _.debounce(function (e) {
+    update: debounce(function (e) {
       this.form.rawContent = e.target.value
       this.$nextTick(() => {
         this.saveDraft()
       })
     }, 500),
-    updateTitle: _.debounce(function (value) {
+    updateTitle: debounce(function (value) {
       this.form.title = value
       this.$nextTick(() => {
         this.saveDraft()
