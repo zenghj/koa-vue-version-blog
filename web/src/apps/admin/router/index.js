@@ -1,14 +1,14 @@
 import Vue from 'vue'
 import Router from 'vue-router'
-// const Articles = () => import('../components/Articles.vue')
-// const EditArticle = () => import('../components/EditArticle.vue')
-// const DraftArticles = () => import('../components/DraftArticles.vue')
-// const CategoryManage = () => import('../components/CategoryManage.vue')
+const Articles = () => import('../components/Articles.vue')
+const EditArticle = () => import('../components/EditArticle.vue')
+const DraftArticles = () => import('../components/DraftArticles.vue')
+const CategoryManage = () => import('../components/CategoryManage.vue')
 
-import Articles from '../components/Articles.vue'
-import EditArticle from '../components/EditArticle.vue'
-import DraftArticles from '../components/DraftArticles.vue'
-import CategoryManage from '../components/CategoryManage.vue'
+// import Articles from '../components/Articles.vue'
+// import EditArticle from '../components/EditArticle.vue'
+// import DraftArticles from '../components/DraftArticles.vue'
+// import CategoryManage from '../components/CategoryManage.vue'
 
 Vue.use(Router)
 

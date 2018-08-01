@@ -100,10 +100,20 @@ const webpackConfig = merge(baseWebpackConfig, {
     // in a separate chunk, similar to the vendor chunk
     // see: https://webpack.js.org/plugins/commons-chunk-plugin/#extra-async-commons-chunk
     new webpack.optimize.CommonsChunkPlugin({
-      name: 'app',
-      async: 'vendor-async',
-      children: true,
-      minChunks: 3
+      async: 'vendor-async-moment',
+      minChunks: function ({resource}) {
+        return resource && resource.includes('node_modules') &&
+          (/moment/).test(resource)
+      }
+    }),
+    new webpack.optimize.CommonsChunkPlugin({
+      // name: 'admin',
+      async: 'vendor-async-highlightJS',
+      // children: true,
+      minChunks: function ({resource}) {
+        return resource && resource.includes('node_modules') &&
+          (/highlight/).test(resource)
+      }
     }),
 
     // copy custom static assets

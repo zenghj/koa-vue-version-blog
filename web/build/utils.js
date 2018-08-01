@@ -114,6 +114,8 @@ function getAppNames () {
   return apps
 }
 
+exports.getAppNames = getAppNames
+
 exports.getEntries = () => {
   const apps = getAppNames()
   const entries = {}
