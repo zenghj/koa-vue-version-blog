@@ -38,6 +38,7 @@ const debounce = require('lodash/debounce')
 import {saveAsDraft, publishArticle, getArticleInfo, updateArticle, uploadImg, getCategoryories} from '../config/api.js'
 import {KEYCODES} from '../../../assets/js/constants.js'
 import '../../../assets/less/markdown.less'
+
 function geneImgCode (url) {
   return `![](${url})`
 }
@@ -81,6 +82,7 @@ export default {
         rawContent: '',
         category: ''
       },
+      content: '',
       categories: [],
       id: '',
       editors: {
@@ -115,10 +117,19 @@ export default {
     document.removeEventListener('keydown', this.handleCtrlS)
     document.removeEventListener('keydown', this.handleTab)
   },
-  computed: {
-    content () {
-      return marked(this.form.rawContent)
-    },
+  // computed: {
+  //   content () {
+  //     console.log('marked', marked)
+  //     window.marked = marked
+  //     return marked(this.form.rawContent)
+  //   },
+  // },
+  watch: {
+    'form.rawContent': function(val) {
+      marked(val).then(content => {
+        this.content = content
+      })
+    }
   },
   methods: {
     update: debounce(function (e) {

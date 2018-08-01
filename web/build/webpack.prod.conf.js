@@ -106,15 +106,15 @@ const webpackConfig = merge(baseWebpackConfig, {
           (/moment/).test(resource)
       }
     }),
-    new webpack.optimize.CommonsChunkPlugin({
-      // name: 'admin',
-      async: 'vendor-async-highlightJS',
-      // children: true,
-      minChunks: function ({resource}) {
-        return resource && resource.includes('node_modules') &&
-          (/highlight/).test(resource)
-      }
-    }),
+    // new webpack.optimize.CommonsChunkPlugin({
+    //   // name: 'admin',
+    //   async: 'vendor-async-highlightJS',
+    //   // children: true,
+    //   minChunks: function ({resource}) {
+    //     return resource && resource.includes('node_modules') &&
+    //       (/highlight/).test(resource)
+    //   }
+    // }),
 
     // copy custom static assets
     new CopyWebpackPlugin([
