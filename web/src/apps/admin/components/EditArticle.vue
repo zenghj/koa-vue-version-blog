@@ -243,7 +243,7 @@ export default {
       setTimeout(() => {
         other.forcedSrolling = false
         // console.log('cancel forcedSrolling', otherName)
-      }, 100)
+      }, 30) // 防止互相触发滚动，导致一直自动滚动
     },
     scrollOtherBaseOne(one, other) {
       const scrollT = one.scrollTop

@@ -1,3 +1,5 @@
+import { geneCategoryFromHtml } from '../../assets/js/utils'
+const tocReg = /\[toc\]/
 // import marked from 'marked'
 // import hljs from 'highlight.js'
 // import 'highlight.js/styles/default.css'
@@ -26,20 +28,40 @@
 //   // renderer: renderer
 // })
 
-// let markedCache
-function asyncMarked (str) {
+let markedCache
+function asyncMarked (rawStr) {
   return Promise.all([
     import(/* webpackChunkName: "marked" */ 'marked'),
     import(/* webpackChunkName: "highlightjs" */ 'highlight.js'),
-    import(/* webpackChunkName:"highlightjsCSS" */ 'highlight.js/styles/default.css')
+    import(/* webpackChunkName:"highlightjsCSS" */ 'highlight.js/styles/default.css'),
   ]).then(([marked, hljs]) => {
-    marked.setOptions({
-      sanitize: true,
-      highlight (code) {
-        return hljs.highlightAuto(code).value
-      },
-    })
-    return marked(str)
+    if (!markedCache) {
+      let renderer = new marked.Renderer()
+
+      // Override function
+      renderer.heading = function (text, level) {
+        let id = Math.random()
+        return `<h${level} id="${id}">${text}</h${level}>\n`
+      }
+      marked.setOptions({
+        sanitize: true,
+        headerIds: true,
+        highlight (code) {
+          return hljs.highlightAuto(code).value
+        },
+        renderer: renderer
+      })
+      markedCache = marked
+    }
+
+    let addCategory = tocReg.test(rawStr)
+    let str = addCategory ? rawStr.replace(tocReg, '') : rawStr
+    let markedHtml = markedCache(str)
+    let category = ''
+    try {
+      addCategory && (category = geneCategoryFromHtml(markedHtml))
+    } catch (err) {}
+    return (addCategory ? category : '') + markedHtml
   })
 }
 

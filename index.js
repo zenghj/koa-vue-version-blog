@@ -34,7 +34,9 @@ app.use(async (ctx, next) => {
 })
 
 app.listen(port, (err) => {
-  if(!err) {
+  if(err) {
+    console.error(err)
+  } else {
     console.log(`listening on http://127.0.0.1:${port}`)
   }
 })

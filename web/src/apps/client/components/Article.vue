@@ -3,7 +3,7 @@
     <!-- <my-header></my-header> -->
     <h1>{{article.title}} <span class="small">{{formatTime(article.createAt, 'YYYY/MM/DD')}}
       <router-link :to="{name: 'articles', query: {category: article.category}}">[{{article.category}}]</router-link></span></h1>
-    <div v-html="article.content" class=""></div>
+    <div ref="articleContent" v-html="article.content" class=""></div>
   </section>
 </template>
 

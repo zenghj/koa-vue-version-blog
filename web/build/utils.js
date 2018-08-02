@@ -7,7 +7,6 @@ const ExtractTextPlugin = require('extract-text-webpack-plugin')
 const packageConfig = require('../package.json')
 const HtmlWebpackPlugin = require('html-webpack-plugin')
 
-
 exports.assetsPath = function (_path) {
   const assetsSubDirectory = process.env.NODE_ENV === 'production'
     ? config.build.assetsSubDirectory
@@ -144,7 +143,8 @@ exports.getHtmlWebpackPluginInstances = () => {
         // https://github.com/kangax/html-minifier#options-quick-reference
       },
       // necessary to consistently work with multiple chunks via CommonsChunkPlugin
-      chunksSortMode: 'dependency'
+      chunksSortMode: 'dependency',
+      favicon: path.resolve(__dirname, '../static/julianzeng-blog.ico')
     })
   })
 }
