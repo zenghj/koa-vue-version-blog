@@ -38,6 +38,7 @@ const debounce = require('lodash/debounce')
 import {saveAsDraft, publishArticle, getArticleInfo, updateArticle, uploadImg, getCategoryories} from '../config/api.js'
 import {KEYCODES} from '../../../assets/js/constants.js'
 import '../../../assets/less/markdown.less'
+import '../../../assets/less/category.less'
 
 function geneImgCode (url) {
   return `![](${url})`
