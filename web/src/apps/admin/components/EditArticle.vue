@@ -135,9 +135,12 @@ export default {
   methods: {
     update: debounce(function (e) {
       this.form.rawContent = e.target.value
-      this.$nextTick(() => {
+      setTimeout(() => {
         this.saveDraft()
-      })
+      }, 1)
+      // this.$nextTick(() => {
+      //   this.saveDraft()
+      // })
     }, 500),
     updateTitle: debounce(function (value) {
       this.form.title = value
