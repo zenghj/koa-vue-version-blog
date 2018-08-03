@@ -108,6 +108,7 @@ methods.$readList = ({page, limit, status = STATUSES.draft, keyword = '', catego
     }, {
       page, 
       limit,
+      sort: {createAt: -1}
     }, (err, result) => {
       if(err) {
         return reject(err);
