@@ -12,7 +12,7 @@
       </el-tag>
       <el-form inline class="inline-block tag">
         <el-form-item>
-          <el-input placeholder="请输入内容" v-model="input">
+          <el-input placeholder="请输入内容" v-model.trim="input">
             <el-button slot="append" type="text" @click="createCate">添加分类</el-button>
           </el-input>
         </el-form-item>

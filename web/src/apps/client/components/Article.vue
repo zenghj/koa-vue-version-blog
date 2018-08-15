@@ -2,7 +2,7 @@
   <section class="article markdown-body" >
     <!-- <my-header></my-header> -->
     <h1>{{article.title}} <span class="small">{{formatTime(article.createAt)}}
-      <router-link :to="{name: 'articles', query: {category: article.category}}">[{{article.category}}]</router-link></span></h1>
+      <router-link v-if="article.category" :to="{name: 'articles', query: {category: article.category}}">[{{article.category}}]</router-link></span></h1>
     <div ref="articleContent" v-html="article.content" class=""></div>
   </section>
 </template>
