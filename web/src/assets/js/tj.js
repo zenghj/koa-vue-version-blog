@@ -43,7 +43,9 @@ export function sendAppMountedTj (now) {
 }
 
 export function applyPerformanceTj () {
-  window.onload = sendPerformanceTj
+  window.onload = () => {
+    setTimeout(sendPerformanceTj, 0)
+  }
 }
 
 export const appMountedTjMixin = {
