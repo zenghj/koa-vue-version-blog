@@ -8,6 +8,7 @@ import 'element-ui/lib/theme-chalk/index.css'
 import '../../assets/less/common.less'
 import URLS from '../../assets/js/urls'
 import '../../assets/js/axiosConfig'
+import {appMountedTjMixin, applyPerformanceTj} from '../../assets/js/tj'
 
 Vue.config.productionTip = false
 
@@ -25,5 +26,8 @@ new Vue({
   el: '#app',
   router,
   components: { App },
-  template: '<App/>'
+  template: '<App/>',
+  mixins: [appMountedTjMixin],
 })
+
+applyPerformanceTj()
