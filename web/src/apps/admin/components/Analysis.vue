@@ -3,23 +3,23 @@
     <my-header></my-header>
     <div class="charts">
       <el-tabs tab-position="left" style="">
-        <el-tab-pane label="App mounted">
-          <h2>&nbsp; Data of the time used for the Vue app mounted per page</h2>
-          <br/>
-          <div class="chart-items clearfix">
-            <div class="chart-item fl" v-for="(url, index) in appMountUrls" :key="index">
-              <h4 class="chart-title"><a :href="url">{{url}}</a></h4>
-              <Echart class="echart" :options="getChartOpt({data: appMountTjs[url], title: url, getY: appMountGetY})"></Echart>
-            </div>
-          </div>
-        </el-tab-pane>
         <el-tab-pane label="Performance">
           <h2>&nbsp; The performance data of every page</h2>
           <br/>
           <div class="chart-items clearfix">
             <div class="chart-item fl" v-for="(url, index) in appPerformanceUrls" :key="index">
-              <h4 class="chart-title"><a :href="url">{{url}}</a></h4>
+              <h4 class="chart-title"><a :href="url">&nbsp; {{url}}</a></h4>
               <Echart class="echart" :options="getStackChartOpt({data: appPerformanceTjs[url], title: url})"></Echart>
+            </div>
+          </div>
+        </el-tab-pane>
+        <el-tab-pane label="App mounted">
+          <h2>&nbsp; Data of the time used for the Vue app mounted per page</h2>
+          <br/>
+          <div class="chart-items clearfix">
+            <div class="chart-item fl" v-for="(url, index) in appMountUrls" :key="index">
+              <h4 class="chart-title"><a :href="url">&nbsp; {{url}}</a></h4>
+              <Echart class="echart" :options="getChartOpt({data: appMountTjs[url], title: url, getY: appMountGetY})"></Echart>
             </div>
           </div>
         </el-tab-pane>
@@ -133,16 +133,6 @@ export default {
     },
     getStackChartOpt ({title, data}) {
       let opt = {}
-      // if(title) {
-      //     opt.title = {         
-      //       // text: title,
-      //       subtext: title,
-      //       x: 'center',
-      //       subtextStyle: {
-      //         lineHeight: 56,
-      //       }
-      //    }
-      // }
       let xs = []
       let names = ['首屏时间', '白屏时间', 'DNS查询时间', 'onload时间']
       let types = ['firstScreenTimeMS', 'whiteScreenTimeMS', 'dnsLookupTimeMS', 'onloadTimeMS']
@@ -156,18 +146,17 @@ export default {
           (seriesData[type] = seriesData[type] || []).push(timing[type])
         })
       })
-      // console.log(seriesData)
       let series = types.map((type, idx) => {
         
         return {
           name: names[idx],
           type: 'line',
-          stack: '时间',
+          // stack: '时间',
           data: seriesData[type],
           smooth: true,
         }
       })
-      return Object.assign(opt, {
+      opt = Object.assign(opt, {
         legend: {
           data: ['首屏时间', '白屏时间', 'DNS查询时间', 'onload时间']
         },
@@ -183,9 +172,9 @@ export default {
         },
         tooltip: {
             trigger: 'axis'
-        },        
-        
+        },
       })
+      return opt
     }
   },
 
@@ -199,7 +188,11 @@ export default {
 <style lang="less" scoped>
 @import "../../../assets/less/mixin.less";
 .chart-item {
-  width: 400px;
+  width: 800px;
+  // width: 100%;
+  box-shadow: 0 0 10px #999;
+  border-radius: 10px;
+  margin: 1em;
   .echart {
     width: inherit;
   }

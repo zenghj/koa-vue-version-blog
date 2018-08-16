@@ -4,8 +4,10 @@ const NAVIGATION_TYPES = {
   2: 'TYPE_BACK_FORWARD', // 用户通过后退按钮访问本页面
 }
 const SUPPORTS = {
-  performance: !!window.performance
+  performance: !!window.performance,
 }
+
+const firstScreenTimeoutMS = 6000
 function collectPerformanceInfo () {
   let performance = window.performance
   let ua = window.navigator.userAgent
@@ -28,7 +30,8 @@ function collectPerformanceInfo () {
     responseTimeMS: timing.responseEnd - timing.requestStart,
     domParseTimeMS: timing.domComplete - timing.domInteractive,
     whiteScreenTimeMS: timing.domLoading - timing.fetchStart, // vue 客户端渲染的话这个就不准了
-    firstScreenTimeMS: window.PerformancePaintTiming ? (performance.getEntriesByType('paint')[0] || {}).startTime
+    firstScreenTimeMS: window.PerformancePaintTiming
+      ? (performance.getEntriesByType('paint')[0] || {}).startTime
       : null,
     domReadyTimeMS: timing.domContentLoadedEventEnd - timing.fetchStart,
     onloadTimeMS: timing.loadEventEnd - timing.fetchStart,
@@ -41,20 +44,19 @@ function collectPerformanceInfo () {
 }
 
 export function asyncCollectPerformance () {
-  return new Promise((resolve) => {
+  return new Promise(resolve => {
     let onloaded = false
     let firstScreen = false
     let performance
     let isResolved = false
     let firstScreenTimeMS
-
     ;(function obeserverFirstPaint () {
       const observer = new PerformanceObserver(list => {
         firstScreenTimeMS = list.getEntries()[0].startTime
         firstScreen = true
         resolvePerformance()
       })
-      observer.observe({entryTypes: ['paint']})
+      observer.observe({ entryTypes: ['paint'] })
     })()
 
     function resolvePerformance () {
@@ -66,20 +68,22 @@ export function asyncCollectPerformance () {
     }
 
     window.onload = () => {
-      onloaded = true
-      performance = collectPerformanceInfo()
-      if (performance.computed.firstScreenTimeMS) {
-        firstScreen = true
-      }
-      resolvePerformance()
-      ;(function timeout (delay) {
-        setTimeout(() => {
-          if (!isResolved) {
-            firstScreen = true
-            resolvePerformance()
-          }
-        }, delay)
-      })(3000)
+      setTimeout(() => { // load事件触发时 timing.loadEventEnd还没被初始化，因为事件还没结束
+        onloaded = true
+        performance = collectPerformanceInfo()
+        if (performance.computed.firstScreenTimeMS) {
+          firstScreen = true
+        }
+        resolvePerformance()
+        ;(function timeout (delay) {
+          setTimeout(() => {
+            if (!isResolved) {
+              firstScreen = true
+              resolvePerformance()
+            }
+          }, delay)
+        })(firstScreenTimeoutMS)
+      }, 0)
     }
   })
 }
