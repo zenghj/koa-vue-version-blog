@@ -13,7 +13,7 @@
           <el-card class="card">
             <div slot="header">
               <h2 class="title">
-                {{item.title}}
+                {{item.title || '无标题'}}
               </h2>
             </div>
             <div class="des">

@@ -3,11 +3,16 @@
  */
 
 import axios from 'axios'
-import {collectPerformanceInfo, calcAppMountedTimeMS} from './performance'
+import {asyncCollectPerformance, calcAppMountedTimeMS} from './performance'
 import URLS from './urls'
 export const TJ_TYPES = {
   APP_MOUNTED: 'APP_MOUNTED',
   PERFORMANCE: 'PERFORMANCE',
+}
+
+export const APPS = {
+  BLOG_CLIENT: 'BLOG_CLIENT',
+  BLOG_ADMIN: 'BLOG_ADMIN',
 }
 
 export function sendTj (opt) {
@@ -21,16 +26,18 @@ export function sendTj (opt) {
     })
 }
 
-export function sendPerformanceTj () {
-  const performance = collectPerformanceInfo()
-  return sendTj({
-    type: TJ_TYPES.PERFORMANCE,
-    data: performance,
-    url: window.location.href,
+export function asyncSendPerformanceTj (appName) {
+  asyncCollectPerformance().then(performance => {
+    return sendTj({
+      type: TJ_TYPES.PERFORMANCE,
+      data: performance,
+      url: window.location.href,
+      app: appName,
+    })
   })
 }
 
-export function sendAppMountedTj (now) {
+export function sendAppMountedTj ({app, now}) {
   if (now && typeof now === 'number') {
     return sendTj({
       type: TJ_TYPES.APP_MOUNTED,
@@ -38,18 +45,9 @@ export function sendAppMountedTj (now) {
         timeMS: calcAppMountedTimeMS(now)
       },
       url: window.location.href,
+      app,
     })
+  } else {
+    console.error('sendAppMountedTj fail')
   }
-}
-
-export function applyPerformanceTj () {
-  window.onload = () => {
-    setTimeout(sendPerformanceTj, 0)
-  }
-}
-
-export const appMountedTjMixin = {
-  mounted () {
-    sendAppMountedTj(Date.now())
-  },
 }

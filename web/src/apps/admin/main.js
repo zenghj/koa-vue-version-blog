@@ -8,7 +8,9 @@ import 'element-ui/lib/theme-chalk/index.css'
 import '../../assets/less/common.less'
 import URLS from '../../assets/js/urls'
 import '../../assets/js/axiosConfig'
-import {appMountedTjMixin, applyPerformanceTj} from '../../assets/js/tj'
+import {sendAppMountedTj, asyncSendPerformanceTj, APPS} from '../../assets/js/tj'
+
+asyncSendPerformanceTj(APPS.BLOG_ADMIN)
 
 Vue.config.productionTip = false
 
@@ -28,7 +30,10 @@ new Vue({
   router,
   components: { App },
   template: '<App/>',
-  mixins: [appMountedTjMixin]
+  mounted () {
+    sendAppMountedTj({
+      now: Date.now(),
+      app: APPS.BLOG_ADMIN
+    })
+  },
 })
-
-applyPerformanceTj()

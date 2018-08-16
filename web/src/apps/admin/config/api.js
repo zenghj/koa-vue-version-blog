@@ -1,5 +1,6 @@
 import axios from 'axios'
 import {Message} from 'element-ui'
+import URLS from '../../../assets/js/urls'
 
 export function saveAsDraft (payload) {
   return axios.post('/article', payload)
@@ -65,5 +66,13 @@ export function delCategoryory (name) {
 export function createCategory (payload) {
   return axios.post('/category', payload).catch(err => {
     Message.error(err.msg || '创建失败')
+  })
+}
+
+export function getTJs (payload) {
+  return axios.get(URLS.tj, {
+    params: payload,
+  }).catch(err => {
+    Message.error(err.msg || '获取统计列表失败')
   })
 }

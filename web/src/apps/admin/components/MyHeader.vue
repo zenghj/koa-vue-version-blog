@@ -29,6 +29,9 @@
           }, {
             name: 'CategoryManage',
             text: '分类管理',
+          }, {
+            name: 'Analysis',
+            text: '数据分析',
           }
         ]
       }

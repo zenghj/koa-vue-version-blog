@@ -4,6 +4,7 @@ const Articles = () => import('../components/Articles.vue')
 const EditArticle = () => import('../components/EditArticle.vue')
 const DraftArticles = () => import('../components/DraftArticles.vue')
 const CategoryManage = () => import('../components/CategoryManage.vue')
+const Analysis = () => import('../components/Analysis.vue')
 
 // import Articles from '../components/Articles.vue'
 // import EditArticle from '../components/EditArticle.vue'
@@ -37,6 +38,10 @@ export default new Router({
       path: '/CategoryManage',
       name: 'CategoryManage',
       component: CategoryManage,
+    }, {
+      path: '/Analysis',
+      name: 'Analysis',
+      component: Analysis,
     }
   ]
 })

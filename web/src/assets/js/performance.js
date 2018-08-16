@@ -6,7 +6,7 @@ const NAVIGATION_TYPES = {
 const SUPPORTS = {
   performance: !!window.performance
 }
-export function collectPerformanceInfo () {
+function collectPerformanceInfo () {
   let performance = window.performance
   let ua = window.navigator.userAgent
   let computed
@@ -38,6 +38,50 @@ export function collectPerformanceInfo () {
     computed,
     ua,
   }
+}
+
+export function asyncCollectPerformance () {
+  return new Promise((resolve) => {
+    let onloaded = false
+    let firstScreen = false
+    let performance
+    let isResolved = false
+    let firstScreenTimeMS
+
+    ;(function obeserverFirstPaint () {
+      const observer = new PerformanceObserver(list => {
+        firstScreenTimeMS = list.getEntries()[0].startTime
+        firstScreen = true
+        resolvePerformance()
+      })
+      observer.observe({entryTypes: ['paint']})
+    })()
+
+    function resolvePerformance () {
+      if (onloaded && firstScreen) {
+        performance.computed.firstScreenTimeMS = firstScreenTimeMS
+        resolve(performance)
+        isResolved = true
+      }
+    }
+
+    window.onload = () => {
+      onloaded = true
+      performance = collectPerformanceInfo()
+      if (performance.computed.firstScreenTimeMS) {
+        firstScreen = true
+      }
+      resolvePerformance()
+      ;(function timeout (delay) {
+        setTimeout(() => {
+          if (!isResolved) {
+            firstScreen = true
+            resolvePerformance()
+          }
+        }, delay)
+      })(3000)
+    }
+  })
 }
 
 export function calcAppMountedTimeMS (now) {
