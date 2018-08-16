@@ -2,23 +2,27 @@
   <article class="analysis-article">
     <my-header></my-header>
     <div class="charts">
-      <el-tabs tab-position="left" style="">
-        <el-tab-pane label="Performance">
-          <h2>&nbsp; The performance data of every page</h2>
+      <el-tabs tab-position="top" style="">
+        <el-tab-pane label="Performance" class="tab-pane">
+          <!-- <h2>&nbsp; The performance data of every page</h2> -->
           <br/>
           <div class="chart-items clearfix">
             <div class="chart-item fl" v-for="(url, index) in appPerformanceUrls" :key="index">
-              <h4 class="chart-title"><a :href="url">&nbsp; {{url}}</a></h4>
+              <h4 class="chart-title">
+                <a :href="url">{{url}}</a>
+              </h4>
               <Echart class="echart" :options="getStackChartOpt({data: appPerformanceTjs[url], title: url})"></Echart>
             </div>
           </div>
         </el-tab-pane>
-        <el-tab-pane label="App mounted">
-          <h2>&nbsp; Data of the time used for the Vue app mounted per page</h2>
+        <el-tab-pane label="App mounted" class="tab-pane" lazy>
+          <!-- <h2>&nbsp; Data of the time used for the Vue app mounted per page</h2> -->
           <br/>
           <div class="chart-items clearfix">
             <div class="chart-item fl" v-for="(url, index) in appMountUrls" :key="index">
-              <h4 class="chart-title"><a :href="url">&nbsp; {{url}}</a></h4>
+              <h4 class="chart-title">
+                <a :href="url">{{url}}</a>
+              </h4>
               <Echart class="echart" :options="getChartOpt({data: appMountTjs[url], title: url, getY: appMountGetY})"></Echart>
             </div>
           </div>
@@ -186,18 +190,40 @@ export default {
 </script>
 
 <style lang="less" scoped>
-@import "../../../assets/less/mixin.less";
-.chart-item {
-  width: 800px;
-  // width: 100%;
-  box-shadow: 0 0 10px #999;
-  border-radius: 10px;
-  margin: 1em;
-  .echart {
-    width: inherit;
+@import '../../../assets/less/mixin.less';
+.tab-pane {
+  width: 100%;
+}
+.el-tabs .el-tabs__header {
+  padding: 0 1em;
+}
+
+.chart-items {
+  margin: 0 1em;
+  .chart-item {
+    box-sizing: border-box;
+    box-shadow: 0 0 10px #999;
+    border-radius: 10px;
+    margin: 1em;
+    .chart-title {
+      .ellipsis();
+    }
+    .echart {
+      width: 100%;
+    }
   }
 }
-.chart-title {
-  .ellipsis();
+
+@media screen and (max-width: 500px) {
+  .chart-items .chart-item {
+    width: 100%;
+    margin: 0;
+  }
+}
+@media screen and (min-width: 600px) {
+  .chart-items .chart-item {
+    width: 45%;
+    min-width: 300px;
+  }
 }
 </style>

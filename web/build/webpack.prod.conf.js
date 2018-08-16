@@ -106,6 +106,13 @@ const webpackConfig = merge(baseWebpackConfig, {
           (/moment/).test(resource)
       }
     }),
+    new webpack.optimize.CommonsChunkPlugin({
+      async: 'vendor-async-vue-echarts',
+      minChunks: function ({resource}) {
+        return resource && resource.includes('node_modules') &&
+          (/vue-echarts/).test(resource)
+      }
+    }),
     // new webpack.optimize.CommonsChunkPlugin({
     //   // name: 'admin',
     //   async: 'vendor-async-highlightJS',
