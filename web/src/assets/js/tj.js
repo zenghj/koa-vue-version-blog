@@ -26,12 +26,18 @@ export function sendTj (opt) {
     })
 }
 
+export function getTjFormatedUrl (url = window.location.href) {
+  // vue 中 新开页的link会被渲染成'/blog/admin/#/draftArticles'
+  //           当前页的会被渲染成 '/blog/admin#/draftArticles'
+  // 统计时应该算一种
+  return url.replace(/\/#/, '#')
+}
 export function asyncSendPerformanceTj (appName) {
   asyncCollectPerformance().then(performance => {
     return sendTj({
       type: TJ_TYPES.PERFORMANCE,
       data: performance,
-      url: window.location.href,
+      url: getTjFormatedUrl(),
       app: appName,
     })
   })
@@ -44,7 +50,7 @@ export function sendAppMountedTj ({app, now}) {
       data: {
         timeMS: calcAppMountedTimeMS(now)
       },
-      url: window.location.href,
+      url: getTjFormatedUrl(),
       app,
     })
   } else {

@@ -71,9 +71,9 @@ export function asyncCollectPerformance () {
       setTimeout(() => { // load事件触发时 timing.loadEventEnd还没被初始化，因为事件还没结束
         onloaded = true
         performance = collectPerformanceInfo()
-        if (performance.computed.firstScreenTimeMS) {
-          firstScreen = true
-        }
+        // if (performance.computed.firstScreenTimeMS) {
+        //   firstScreen = true
+        // }
         resolvePerformance()
         ;(function timeout (delay) {
           setTimeout(() => {
