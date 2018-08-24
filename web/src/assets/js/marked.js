@@ -44,7 +44,7 @@ function asyncMarked (rawStr) {
         return `<h${level} id="${id}">${text}</h${level}>\n`
       }
       marked.setOptions({
-        sanitize: true,
+        sanitize: false,
         headerIds: true,
         highlight (code) {
           return hljs.highlightAuto(code).value
