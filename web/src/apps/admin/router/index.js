@@ -5,6 +5,7 @@ const EditArticle = () => import('../components/EditArticle.vue')
 const DraftArticles = () => import('../components/DraftArticles.vue')
 const CategoryManage = () => import('../components/CategoryManage.vue')
 const Analysis = () => import('../components/Analysis.vue')
+const AdminNotFound = () => import('../components/AdminNotFound.vue')
 
 // import Articles from '../components/Articles.vue'
 // import EditArticle from '../components/EditArticle.vue'
@@ -16,6 +17,11 @@ Vue.use(Router)
 export default new Router({
   base: '/blog/admin',
   routes: [
+    {
+      path: '*',
+      name: 'notFound',
+      component: AdminNotFound,
+    },
     {
       path: '/',
       name: 'articles',
