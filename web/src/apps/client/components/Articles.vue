@@ -9,20 +9,22 @@
       </div>
       <p class="total-count">总共{{list.length}}条记录</p>
       <div class="article-items">
-        <router-link class="article-item" v-for="(item,index) in list" :key="index" :to="{name: 'article', params: {id: item._id}}">
-          <el-card class="card">
-            <div slot="header">
-              <h2 class="title">
-                {{item.title || '无标题'}}
-              </h2>
-            </div>
-            <div class="des">
-              <p>所属分类: {{item.category}}</p>
-              <p>创建于: {{formatTime(item.createAt)}}</p>
-            </div>
-          </el-card>
-        </router-link>
-        <!-- <div v-if="list.length === 0" class="empty-result"></div> -->
+        <div class="items-wrapper clearfix">
+          <router-link class="article-item" v-for="(item,index) in list" :key="index" :to="{name: 'article', params: {id: item._id}}">
+            <el-card class="card">
+              <div slot="header">
+                <h2 class="title">
+                  {{item.title || '无标题'}}
+                </h2>
+              </div>
+              <div class="des">
+                <p>所属分类: {{item.category}}</p>
+                <p>创建于: {{formatTime(item.createAt)}}</p>
+              </div>
+            </el-card>
+          </router-link>
+          <!-- <div v-if="list.length === 0" class="empty-result"></div> -->
+        </div>
       </div>
 
     </div>
@@ -134,15 +136,15 @@ export default {
   }
   @media screen and (min-width: 500px) {
     .article-items {
-      display: flex;
-      flex-direction: row;
-      flex: 0 0 23em;
-      align-items: flex-start;
-      justify-content: space-between;
-      flex-wrap: wrap;
+      overflow: hidden;
+    }
+    .items-wrapper {
+      width: calc(~'100% + 1em')
     }
     .article-item {
-      min-width: 23em;
+      float: left;
+      width: 400px;
+      margin-right: 1em;
     }
   }
   @media screen and (max-width: 500px) {
