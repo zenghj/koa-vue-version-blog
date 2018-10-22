@@ -5,7 +5,7 @@
         <router-link :to="{name: item.name}">{{item.text}}</router-link>
       </el-menu-item>
       <el-menu-item :index="String(links.length)">
-        <a :href="`${URLS.client}#/articles`">客户端</a>
+        <a :href="`${URLS.client}/articles`">客户端</a>
       </el-menu-item>
     </el-menu>
   </header>

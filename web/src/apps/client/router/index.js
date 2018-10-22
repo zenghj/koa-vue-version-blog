@@ -6,7 +6,8 @@ const ClientNotFount = () => import('../components/ClientNotFount.vue')
 Vue.use(Router)
 
 export default new Router({
-  base: '/client',
+  base: '/blog/client',
+  mode: 'history',
   routes: [
     {
       path: '*',

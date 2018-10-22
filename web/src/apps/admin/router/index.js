@@ -16,6 +16,7 @@ Vue.use(Router)
 
 export default new Router({
   base: '/blog/admin',
+  mode: 'history',
   routes: [
     {
       path: '*',
