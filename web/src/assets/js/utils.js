@@ -89,3 +89,7 @@ function geneCategoryHtmlCode ({ data, children }) {
             </li>
           </ul>`
 }
+
+export function isUndefiend (obj) {
+  return typeof obj === 'undefined'
+}

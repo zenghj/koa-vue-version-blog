@@ -9,6 +9,7 @@ import '../../assets/less/common.less'
 import URLS from '../../assets/js/urls'
 import '../../assets/js/axiosConfig'
 import {sendAppMountedTj, asyncSendPerformanceTj, APPS} from '../../assets/js/tj'
+import {initGlobal} from '../../assets/js/global'
 
 asyncSendPerformanceTj(APPS.BLOG_ADMIN)
 
@@ -22,6 +23,12 @@ Vue.mixin({
       URLS
     }
   }
+})
+
+initGlobal({
+  router,
+  URLS,
+  isHashMode: router.mode === 'hash'// Maybe occur to fallback to hash;
 })
 
 /* eslint-disable no-new */

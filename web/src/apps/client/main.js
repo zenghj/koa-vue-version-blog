@@ -9,6 +9,7 @@ import '../../assets/less/common.less'
 import URLS from '../../assets/js/urls'
 import '../../assets/js/axiosConfig'
 import {sendAppMountedTj, asyncSendPerformanceTj, APPS} from '../../assets/js/tj'
+import {initGlobal} from '../../assets/js/global'
 
 asyncSendPerformanceTj(APPS.BLOG_CLIENT)
 Vue.config.productionTip = false
@@ -22,6 +23,12 @@ Vue.mixin({
     }
   }
 })
+
+initGlobal({
+  router,
+  URLS,
+})
+
 /* eslint-disable no-new */
 new Vue({
   el: '#app',

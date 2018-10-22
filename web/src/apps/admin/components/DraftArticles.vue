@@ -27,7 +27,7 @@
       label="操作"
       width="138">
       <template slot-scope="scope">
-        <a :href="`${URLS.client}/articles/${scope.row._id}`" target="_blank">
+        <a :href="URLS.getClientArticleUrl(scope.row._id)" target="_blank">
           <el-button type="text" size="small">预览</el-button>
         </a>
         <el-button type="text" size="small" @click="publish($event, scope.row)">发布</el-button>

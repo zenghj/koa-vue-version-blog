@@ -11,7 +11,7 @@
         <el-upload class="upload-img" :action="URLS.uploadImgApi" :on-progress="handleUploading" :on-change="handleUploadEnd" :on-success="handleUploadImgSuccess" :on-error="handleUploadImgFail" name="img" :show-file-list="false">
           <i class="el-icon-picture"></i>
         </el-upload>
-        <a v-if="id" :href="`${URLS.client}/articles/${id}`" target="_blank">
+        <a v-if="id" :href="URLS.getClientArticleUrl(id)" target="_blank">
           <el-button type="text">预览</el-button>
         </a>
         <router-link :to="{name: 'draftArticles'}" target="_blank">
