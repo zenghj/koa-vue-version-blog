@@ -3,6 +3,7 @@ const Koa = require('koa')
 const koaStatic = require('koa-static')
 const logger = require('koa-logger')
 const bodyParser = require('koa-bodyparser')
+const cors = require('koa-cors')
 const app = new Koa()
 const router = require('./router')
 const config = require('./config')
@@ -10,6 +11,11 @@ const {errorLog, httpLog} = require('./lib/logger')
 require('./connectDB')
 const port = 3000
 
+app.use(cors({
+  origin: process.env.NODE_ENV === 'production' ? 'http://45.62.111.182:3001' : 'http://127.0.0.1:3001',
+  methods: ['GET'],
+  headers: ['Content-Type'],
+}))
 app.use(bodyParser())
 
 app.use(logger())
