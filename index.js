@@ -12,7 +12,6 @@ require('./connectDB')
 const port = 3000
 
 app.use(cors({
-  origin: process.env.NODE_ENV === 'production' ? 'http://45.62.111.182:3001' : 'http://127.0.0.1:3001',
   methods: ['GET'],
   headers: ['Content-Type'],
 }))
