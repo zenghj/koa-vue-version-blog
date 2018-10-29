@@ -1,0 +1,17 @@
+// online-articles
+export const FETCH_ONLINE_ARTICLES = 'FETCH_ONLINE_ARTICLES'
+export const DELETE_ONLINE_ARTICLE = 'DELETE_ONLINE_ARTICLE'
+
+// draft-articles
+export const FETCH_DRAFTS = 'FETCH_DRAFTS'
+export const DELETE_DRAFT = 'DELETE_DRAFT'
+export const PUBLISH_DRAFT_TO_ONLINE = 'PUBLISH_DRAFT_TO_ONLINE'
+
+// categories-manage
+export const FETCH_CATEGORY_LIST = 'FETCH_CATEGORY_LIST'
+export const ACT_DELETE_CATEGORY = 'DELETE_CATEGORY'
+export const ACT_CREATE_CATEGORY = 'CREATE_CATEGORY'
+
+// edit-article
+export const FETCH_ARTICLE_INFO = 'FETCH_ARTICLE_INFO'
+export const UPDATE_ARTICLE_INFO = 'FETCH_ARTICLE_INFO'

@@ -3,6 +3,7 @@
 import Vue from 'vue'
 import App from './App'
 import router from './router'
+import store from './store'
 import ElementUI from 'element-ui'
 import 'element-ui/lib/theme-chalk/index.css'
 import '../../assets/less/common.less'
@@ -11,7 +12,7 @@ import '../../assets/js/axiosConfig'
 import {sendAppMountedTj, asyncSendPerformanceTj, APPS} from '../../assets/js/tj'
 import {initGlobal} from '../../assets/js/global'
 
-asyncSendPerformanceTj(APPS.BLOG_ADMIN)
+process.env.NODE_ENV === 'production' && asyncSendPerformanceTj(APPS.BLOG_ADMIN)
 
 Vue.config.productionTip = false
 
@@ -35,10 +36,11 @@ initGlobal({
 new Vue({
   el: '#app',
   router,
+  store,
   components: { App },
   template: '<App/>',
   mounted () {
-    sendAppMountedTj({
+    process.env.NODE_ENV === 'production' && sendAppMountedTj({
       now: Date.now(),
       app: APPS.BLOG_ADMIN
     })

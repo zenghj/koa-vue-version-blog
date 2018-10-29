@@ -41,21 +41,28 @@
   </div>
 </template>
 <script>
-import {fetchDrafts, deleteArticle, updateArticle} from '../config/api.js'
 import MyHeader from './MyHeader.vue'
 import formatTime from '../../../assets/js/timeHelper.js'
+import {mapState, mapActions} from 'vuex'
+import draftsMod, {moduleName as MODULE_NAME} from '../store/modules/draft-articles.js'
+import {FETCH_DRAFTS, DELETE_DRAFT, PUBLISH_DRAFT_TO_ONLINE} from '../store/actionTypes.js'
+
 export default {
-  created () {
-    this.fetchList()
+  beforeCreate() {
+    this.$store.registerModule(MODULE_NAME, draftsMod)
+    this.$store.dispatch(`${MODULE_NAME}/${FETCH_DRAFTS}`)
+  },
+  destroyed() {
+    this.$store.unregisterModule(MODULE_NAME)
   },
   data () {
     return {
-      list: []
     }
   },
   computed: {
+    ...mapState(MODULE_NAME, ['drafts']),
     computedList () {
-      return this.list.map(item => {
+      return (this.drafts || []).map(item => {
         return {
           ...item,
           title: (item.title ? item.title : '无标题'),
@@ -68,48 +75,21 @@ export default {
     MyHeader,
   },
   methods: {
+    ...mapActions(MODULE_NAME, [FETCH_DRAFTS, DELETE_DRAFT, PUBLISH_DRAFT_TO_ONLINE]),
     confirmDelete (e, item) {
       this.$confirm('此操作将永久删除', '警告', {
         confirmButtonText: '确定',
         cancelButtonText: '取消',
         type: 'warning'
       }).then(() => {
-        deleteArticle(item._id)
-          .then(({data}) => {
-            if (data.state === 1) {
-              this.fetchList()
-              this.$message.success('删除成功')
-            } else {
-              this.$message.error('删除失败')
-            }
-          })
+        this[DELETE_DRAFT](item._id)
       }).catch(() => {})
     },
     fetchList () {
-      fetchDrafts().then(({data}) => {
-        if (data.state === 1) {
-          this.list = data.result.docs
-        } else {
-          this.$message.error(data.msg || '获取列表失败')
-        }
-      })
+      this[FETCH_DRAFTS]()
     },
     publish (e, item) {
-      console.log(item);
-      updateArticle(item._id, {
-        status: 1,
-      }).then(({data}) => {
-        if (data.state === 1) {
-          this.$message.success('保存成功')
-          // this.$router.push({name: 'articles'})
-          this.fetchList()
-        } else {
-          this.$message.error('保存失败')
-        }
-      }).catch(err => {
-        console.error(err)
-        this.$message.error('保存失败')
-      })
+      this[PUBLISH_DRAFT_TO_ONLINE](item._id)
     } 
   }
 }
