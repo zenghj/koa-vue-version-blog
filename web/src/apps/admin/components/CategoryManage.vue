@@ -34,9 +34,9 @@ export default {
     this.$store.registerModule(MODULE_NAME, categoryManageMod)
     this.$store.dispatch(`${MODULE_NAME}/${FETCH_CATEGORY_LIST}`)
   },
-  destroyed() {
-    this.$store.unregisterModule(MODULE_NAME)
-  },
+  // destroyed() {
+  //   this.$store.unregisterModule(MODULE_NAME)
+  // },
   data () {
     return {
       input: ''

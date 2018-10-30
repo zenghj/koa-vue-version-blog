@@ -47,16 +47,20 @@ import {mapState, mapActions} from 'vuex'
 import {FETCH_ONLINE_ARTICLES, DELETE_ONLINE_ARTICLE} from '../store/actionTypes.js'
 
 const MODULE_NAME = onlineArticleMod.moduleName;
+// let count = 0;
+
 export default {
   beforeCreate() {
+    // console.log('beforeCreate registerModule', count++)
+    // console.log(this.$store, count)
     this.$store.registerModule(MODULE_NAME, onlineArticleMod)
-    console.log('registerModule')
     this.$store.dispatch(`${MODULE_NAME}/${FETCH_ONLINE_ARTICLES}`)
-    
   },
-  destroyed() {
-    console.log('unregisterModule')
-    this.$store.unregisterModule(MODULE_NAME)
+  beforeDestroy() {
+    // console.log('beforeDestroyed unregisterModule', count++);
+    // console.log(this.$store, count)
+    // // console.log('xxx');
+    // this.$store.unregisterModule(MODULE_NAME)
   },
   
   data () {

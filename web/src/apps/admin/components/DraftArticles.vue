@@ -46,18 +46,16 @@ import formatTime from '../../../assets/js/timeHelper.js'
 import {mapState, mapActions} from 'vuex'
 import draftsMod, {moduleName as MODULE_NAME} from '../store/modules/draft-articles.js'
 import {FETCH_DRAFTS, DELETE_DRAFT, PUBLISH_DRAFT_TO_ONLINE} from '../store/actionTypes.js'
-
 export default {
   beforeCreate() {
     this.$store.registerModule(MODULE_NAME, draftsMod)
     this.$store.dispatch(`${MODULE_NAME}/${FETCH_DRAFTS}`)
   },
-  destroyed() {
-    this.$store.unregisterModule(MODULE_NAME)
-  },
+  // destroyed() {
+  //   this.$store.unregisterModule(MODULE_NAME)
+  // },
   data () {
-    return {
-    }
+    return {}
   },
   computed: {
     ...mapState(MODULE_NAME, ['drafts']),
