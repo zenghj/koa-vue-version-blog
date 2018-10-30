@@ -53,13 +53,13 @@ export function getCategoryories () {
   })
 }
 
-export function delCategoryory (name) {
+export function delCategoryory (item) {
   return axios.delete('/category', {
     data: {
-      name,
+      name: item.name,
     }
   }).catch(err => {
-    Message.error(err.msg || '获取Categoryories失败')
+    Message.error(err.msg || '删除Categoryories失败')
   })
 }
 

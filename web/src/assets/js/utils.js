@@ -93,3 +93,11 @@ function geneCategoryHtmlCode ({ data, children }) {
 export function isUndefiend (obj) {
   return typeof obj === 'undefined'
 }
+
+export function makeKeyMap (types) {
+  const map = {}
+  types && Object.keys(types).forEach(type => {
+    map[type] = type
+  })
+  return map
+}

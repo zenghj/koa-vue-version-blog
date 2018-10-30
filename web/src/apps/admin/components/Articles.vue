@@ -40,21 +40,38 @@
   </div>
 </template>
 <script>
-import {fetchArticles, deleteArticle} from '../config/api.js'
 import MyHeader from './MyHeader.vue'
 import formatTime from '../../../assets/js/timeHelper.js'
+import onlineArticleMod from '../store/modules/online-articles.js'
+import {mapState, mapActions} from 'vuex'
+import {FETCH_ONLINE_ARTICLES, DELETE_ONLINE_ARTICLE} from '../store/actionTypes.js'
+
+const MODULE_NAME = onlineArticleMod.moduleName;
+// let count = 0;
+
 export default {
-  created () {
-    this.fetchList()
+  beforeCreate() {
+    // console.log('beforeCreate registerModule', count++)
+    // console.log(this.$store, count)
+    this.$store.registerModule(MODULE_NAME, onlineArticleMod)
+    this.$store.dispatch(`${MODULE_NAME}/${FETCH_ONLINE_ARTICLES}`)
   },
+  beforeDestroy() {
+    // console.log('beforeDestroyed unregisterModule', count++);
+    // console.log(this.$store, count)
+    // // console.log('xxx');
+    // this.$store.unregisterModule(MODULE_NAME)
+  },
+  
   data () {
     return {
-      list: []
     }
   },
   computed: {
+    ...mapState(onlineArticleMod.moduleName, ['articles']),
+    // ...mapState(['articles']),
     computedList () {
-      return this.list.map(item => {
+      return this.articles && this.articles.map(item => {
         return {
           ...item,
           title: (item.title ? item.title : '无标题'),
@@ -67,32 +84,17 @@ export default {
     MyHeader,
   },
   methods: {
+    ...mapActions(onlineArticleMod.moduleName, [DELETE_ONLINE_ARTICLE, FETCH_ONLINE_ARTICLES]),
+    // ...mapActions([DELETE_ONLINE_ARTICLE, FETCH_ONLINE_ARTICLES]),
     confirmDelete (e, item) {
       this.$confirm('此操作将永久删除', '警告', {
         confirmButtonText: '确定',
         cancelButtonText: '取消',
         type: 'warning'
       }).then(() => {
-        deleteArticle(item._id)
-          .then(({data}) => {
-            if (data.state === 1) {
-              this.fetchList()
-              this.$message.success('删除成功')
-            } else {
-              this.$message.error('删除失败')
-            }
-          })
+        this[DELETE_ONLINE_ARTICLE](item._id)
       }).catch(() => {})
     },
-    fetchList () {
-      fetchArticles().then(({data}) => {
-        if (data.state === 1) {
-          this.list = data.result.docs
-        } else {
-          this.$message.error(data.msg || '获取列表失败')
-        }
-      })
-    }
   }
 }
 </script>
